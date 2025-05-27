@@ -1,0 +1,16 @@
+package com.uade.tpo.application.jugador.service.jugador;
+
+import org.springframework.web.bind.annotation.PathVariable;
+
+import com.uade.tpo.application.jugador.entity.Jugador;
+
+import java.util.List;
+import java.util.Optional;
+
+public interface IJugadorService {
+
+    List<Jugador> findAll();
+    Optional<Jugador> findById(Long id);
+    Jugador save(Jugador entity);
+    void deleteById(Long id);
+}
