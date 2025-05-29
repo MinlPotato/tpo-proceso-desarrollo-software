@@ -44,18 +44,22 @@ public class DeporteController {
         }
 
     }
-    @PostMapping("/create")
-    public Deporte createDeporte(@RequestBody DeporteCreateDTO deporte) {
-        try {
-            if (deporte == null || deporte.getNombre() == null || deporte.getNombre().isEmpty()) {
-                throw new IllegalArgumentException("Deporte name cannot be null or empty");
-            }
-            return deporteService.createDeporte(deporte);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null; // Devuelve null en caso de error
+@PostMapping("/create")
+public DeporteDTO createDeporte(@RequestBody DeporteCreateDTO deporte) {
+    try {
+        if (deporte == null || deporte.getNombre() == null || deporte.getNombre().isEmpty()) {
+            throw new IllegalArgumentException("Deporte name cannot be null or empty");
         }
+        Deporte creado = deporteService.createDeporte(deporte);
+        DeporteDTO dep =new DeporteDTO(); // O usa un mapper si lo tenés
+        dep.setNombre(creado.getNombre());
+        dep.setDescripcion(creado.getDescripcion());
+        return dep;
+        } catch (Exception e) {
+        e.printStackTrace();
+        return null;
     }
+}
     @PutMapping("/{id}")
     public DeporteDTO updateDeporte(@PathVariable Long id, @RequestBody DeporteDTO deporte) {
         try {
