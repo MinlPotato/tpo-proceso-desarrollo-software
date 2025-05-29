@@ -1,18 +1,16 @@
 package com.uade.tpo.application.nivel.entity;
-
-import com.uade.tpo.application.deporte.entity.Deporte;
-import com.uade.tpo.application.deporte.enums.NivelDeporte;
+import com.uade.tpo.application.deporte.entity.Deporte; 
 import com.uade.tpo.application.jugador.entity.Jugador;
-
+import com.uade.tpo.application.deporte.enums.NivelDeporte;   
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-@Setter
-@Getter
+
 @Entity
 @Table(name = "nivel")
-
+@Getter
+@Setter
 public class Nivel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,7 +21,8 @@ public class Nivel {
     @JoinColumn(name = "deporte_id", nullable = false)
     private Deporte deporte;
 
-    @OneToMany(mappedBy = "nivel")
+    @ManyToOne
+    @JoinColumn(name = "jugador_id", nullable = false)
     private Jugador jugador;
 
     @Column(name = "nivel", nullable = false)
@@ -31,8 +30,4 @@ public class Nivel {
 
     @Column(name = "favorito", nullable = false)
     private Boolean favorito;
-
-
-
-
 }

@@ -5,7 +5,6 @@ import org.springframework.stereotype.Repository;
 
 import com.uade.tpo.application.jugador.entity.Jugador;
 
-import java.util.Optional;
 
 @Repository
 public interface JugadorRepository extends JpaRepository<Jugador, Long> {

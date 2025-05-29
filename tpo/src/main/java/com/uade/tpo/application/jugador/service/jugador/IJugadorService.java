@@ -1,6 +1,5 @@
 package com.uade.tpo.application.jugador.service.jugador;
 
-import org.springframework.web.bind.annotation.PathVariable;
 
 import com.uade.tpo.application.jugador.entity.Jugador;
 

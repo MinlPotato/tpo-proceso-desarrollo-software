@@ -1,5 +1,6 @@
 package com.uade.tpo.application.jugador.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.uade.tpo.application.deporte.entity.Deporte;
@@ -29,20 +30,20 @@ public class Jugador {
     private String email;
 
     @Column(name = "ubicacion", nullable = false)
-    private String Ubicacion;
+    private String ubicacion;
 
-    @ManyToOne
-    @JoinColumn(name = "nivel_id", nullable = false)
-    private List< Nivel> nivel;
+    @OneToMany(mappedBy = "jugador", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Nivel> niveles = new ArrayList<>();
 
-    @ManyToOne
-    @JoinColumn(name = "deporte_id", nullable = false)
-    private List<Deporte> deporte;
+@ManyToMany
+@JoinTable(name = "jugador_deporte",
+    joinColumns = @JoinColumn(name = "jugador_id"),
+    inverseJoinColumns = @JoinColumn(name = "deporte_id"))
+private List<Deporte> deportes;
 
     @ManyToOne
     @JoinColumn(name = "equipo_id", nullable = false)
-    private List<Equipo> equipo;
-    
+    private Equipo equipo;
 
     // @OneToMany(mappedBy = "jugador")
 }

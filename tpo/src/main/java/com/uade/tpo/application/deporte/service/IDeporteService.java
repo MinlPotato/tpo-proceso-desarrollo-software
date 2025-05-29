@@ -12,7 +12,5 @@ public interface IDeporteService {
     public Deporte createDeporte(DeporteCreateDTO deporte);
     public DeporteDTO updateDeporte( DeporteDTO deporte);
     public void deleteDeporte(Long id);
-    private DeporteDTO toDTO(Deporte deporte) {
-        return new DeporteDTO(deporte.getId(), deporte.getNombre(), deporte.getDescripcion());
-    }
+
 }

@@ -31,8 +31,7 @@ public class Partido {
     @JoinColumn(name = "deporte_id", nullable = false)
     private Deporte deporte;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "partido_id")
+    @Transient
     private List<StrategyAdmisionPartido> admitidos;
 
     @Column(nullable = false)
@@ -56,8 +55,7 @@ public class Partido {
         inverseJoinColumns = @JoinColumn(name = "equipo_id")
     )
     private List<Equipo> equipos;
-
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "resultado_id", referencedColumnName = "id")
-    private ResultadoFinal resultado;
+@OneToOne(cascade = CascadeType.ALL)
+@JoinColumn(name = "resultado_id", referencedColumnName = "resultado_final_id")
+private ResultadoFinal resultado;
 }
