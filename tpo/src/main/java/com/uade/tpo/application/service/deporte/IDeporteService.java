@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface IDeporteService {
     public List<DeporteDTO> getDeportes();
 
-    public Optional<DeporteDTO> getDeporteById(Long id);
+    public DeporteDTO getDeporteById(Long id);
 
     public DeporteDTO createDeporte(DeporteCreateDTO deporte);
 

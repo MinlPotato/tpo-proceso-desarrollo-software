@@ -1,13 +1,13 @@
 package com.uade.tpo.application.entity;
 
+import com.uade.tpo.application.service.state.partido.EstadoPartido;
+import com.uade.tpo.application.service.strategy.partido.StrategyAdmisionPartido;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
 import java.util.Date;
 import java.util.List;
-
-import com.uade.tpo.application.estadoPartido.entity.EstadoPartido;
-import com.uade.tpo.application.service.strategy.partido.StrategyAdmisionPartido;
 
 @Getter
 @Setter
@@ -40,18 +40,19 @@ public class Partido {
     @Column(nullable = false)
     private String ubicacion;
 
-    @ManyToOne
-    @JoinColumn(name = "estado_id", nullable = false)
+    @Transient
     private EstadoPartido estado;
 
     @ManyToMany
     @JoinTable(
-        name = "partido_equipo",
-        joinColumns = @JoinColumn(name = "partido_id"),
-        inverseJoinColumns = @JoinColumn(name = "equipo_id")
+            name = "partido_equipo",
+            joinColumns = @JoinColumn(name = "partido_id"),
+            inverseJoinColumns = @JoinColumn(name = "equipo_id")
     )
     private List<Equipo> equipos;
-@OneToOne(cascade = CascadeType.ALL)
-@JoinColumn(name = "resultado_id", referencedColumnName = "resultado_final_id")
-private ResultadoFinal resultado;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "resultado_id", referencedColumnName = "resultado_final_id")
+    private ResultadoFinal resultado;
+
 }

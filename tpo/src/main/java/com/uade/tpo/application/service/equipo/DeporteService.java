@@ -24,12 +24,21 @@ public class DeporteService implements IDeporteService {
                 .toList();
     }
 
-    public Optional<DeporteDTO> getDeporteById(Long id) {
-        return deporteRepository.findById(id)
-                .map(this::toDTO);  // transforma el Deporte en DeporteDTO si existe
+    public DeporteDTO getDeporteById(Long id) {
+        if (id == null || id <= 0) {
+            throw new IllegalArgumentException("ID must be a positive number");
+        }
+
+        Deporte deporte = deporteRepository.findById(id).orElseThrow(() -> new RuntimeException("Deporte not found with id " + id));
+        return toDTO(deporte);
+
     }
 
     public DeporteDTO createDeporte(DeporteCreateDTO deporteCreateDTO) {
+
+        if (deporteCreateDTO == null || deporteCreateDTO.getNombre() == null || deporteCreateDTO.getNombre().isEmpty()) {
+            throw new IllegalArgumentException("Deporte name cannot be null or empty");
+        }
 
         Deporte deporte = new Deporte();
         deporte.setNombre(deporteCreateDTO.getNombre());
@@ -42,14 +51,33 @@ public class DeporteService implements IDeporteService {
     }
 
     public void deleteDeporte(Long id) {
+
+        if (id == null || id <= 0) {
+            throw new IllegalArgumentException("ID must be a positive number");
+        }
+
+        if (!deporteRepository.existsById(id)) {
+            throw new IllegalArgumentException("Deporte not found with id: " + id);
+        }
+
         deporteRepository.deleteById(id);
     }
 
-    public DeporteDTO updateDeporte(Long id, DeporteDTO deporte) {
+    public DeporteDTO updateDeporte(Long id, DeporteDTO deporteDTO) {
 
+        if (id == null || id <= 0) {
+            throw new IllegalArgumentException("ID must be a positive number");
+        }
 
-        Deporte dep = deporteRepository.save(deporte);
-        return toDTO(dep);
+        if (deporteDTO == null || deporteDTO.getNombre() == null || deporteDTO.getNombre().isEmpty()) {
+            throw new IllegalArgumentException("Deporte name cannot be null or empty");
+        }
+
+        Deporte deporte = deporteRepository.findById(id).orElseThrow(() -> new RuntimeException("Deporte not found with id " + id));;
+        deporte.setNombre(deporteDTO.getNombre());
+        deporte.setDescripcion(deporteDTO.getDescripcion());
+
+        return toDTO(deporteRepository.save(deporte));
 
     }
 
