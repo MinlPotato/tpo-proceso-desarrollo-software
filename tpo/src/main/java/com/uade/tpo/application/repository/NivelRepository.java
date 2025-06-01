@@ -7,4 +7,6 @@ import com.uade.tpo.application.entity.Nivel;
 
 @Repository
 public interface NivelRepository extends JpaRepository<Nivel, Long> {
+
+    boolean exists(Long idJugador, Long idDeporte);
 }

@@ -8,5 +8,7 @@ import com.uade.tpo.application.entity.Deporte;
 
 @Repository
 public interface DeporteRepository extends JpaRepository<Deporte, Long> {
+    boolean existsByNombre(String nombre);
+
 
 }

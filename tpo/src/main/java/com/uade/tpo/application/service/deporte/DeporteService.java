@@ -1,15 +1,14 @@
-package com.uade.tpo.application.service.equipo;
+package com.uade.tpo.application.service.deporte;
 
 import com.uade.tpo.application.dto.DeporteCreateDTO;
 import com.uade.tpo.application.dto.DeporteDTO;
 import com.uade.tpo.application.entity.Deporte;
 import com.uade.tpo.application.repository.DeporteRepository;
-import com.uade.tpo.application.service.deporte.IDeporteService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class DeporteService implements IDeporteService {
@@ -39,7 +38,9 @@ public class DeporteService implements IDeporteService {
         if (deporteCreateDTO == null || deporteCreateDTO.getNombre() == null || deporteCreateDTO.getNombre().isEmpty()) {
             throw new IllegalArgumentException("Deporte name cannot be null or empty");
         }
-
+        if (deporteRepository.existsByNombre(deporteCreateDTO.getNombre())) {
+            throw new IllegalArgumentException("Deporte with name " + deporteCreateDTO.getNombre() + " already exists");
+        }
         Deporte deporte = new Deporte();
         deporte.setNombre(deporteCreateDTO.getNombre());
         deporte.setDescripcion(deporte.getDescripcion());
