@@ -3,7 +3,8 @@ package com.uade.tpo.application.dto;
 import lombok.Getter;
 
 @Getter
-public class DeporteCreateDTO {
+public class JugadorCreateDTO {
     private String nombre;
-    private String descripcion;
+    private String email;
+    private String ubicacion;
 }

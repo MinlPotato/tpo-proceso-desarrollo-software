@@ -12,7 +12,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/deportes")
+@RequestMapping("api/deportes")
 public class DeporteController {
 
     @Autowired
@@ -28,14 +28,14 @@ public class DeporteController {
         return ResponseEntity.ok(deporteService.getDeporteById(id));
     }
 
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<DeporteDTO> createDeporte(@RequestBody DeporteCreateDTO deporte) {
         DeporteDTO creado = deporteService.createDeporte(deporte);
         return ResponseEntity.status(HttpStatus.CREATED).body(creado);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<DeporteDTO> updateDeporte(@PathVariable Long id, @RequestBody DeporteDTO deporte) {
+    public ResponseEntity<DeporteDTO> updateDeporte(@PathVariable Long id, @RequestBody DeporteCreateDTO deporte) {
         return ResponseEntity.ok(deporteService.updateDeporte(id, deporte));
     }
 

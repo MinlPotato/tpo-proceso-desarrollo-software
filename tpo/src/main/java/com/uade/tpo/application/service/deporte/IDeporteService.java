@@ -12,7 +12,7 @@ public interface IDeporteService {
 
     public DeporteDTO createDeporte(DeporteCreateDTO deporte);
 
-    public DeporteDTO updateDeporte(Long id, DeporteDTO deporte);
+    public DeporteDTO updateDeporte(Long id, DeporteCreateDTO deporte);
 
     public void deleteDeporte(Long id);
 
