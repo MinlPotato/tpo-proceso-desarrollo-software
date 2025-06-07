@@ -3,6 +3,7 @@ package com.uade.tpo.application.service.deporte;
 import com.uade.tpo.application.dto.DeporteCreateDTO;
 import com.uade.tpo.application.dto.DeporteDTO;
 import com.uade.tpo.application.entity.Deporte;
+import com.uade.tpo.application.exception.ResourceNotFoundException;
 import com.uade.tpo.application.repository.DeporteRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,22 +29,22 @@ public class DeporteService implements IDeporteService {
             throw new IllegalArgumentException("ID must be a positive number");
         }
 
-        Deporte deporte = deporteRepository.findById(id).orElseThrow(() -> new RuntimeException("Deporte not found with id " + id));
+        Deporte deporte = deporteRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Deporte not found with id " + id));
         return toDTO(deporte);
 
     }
 
-    public DeporteDTO createDeporte(DeporteCreateDTO deporteCreateDTO) {
+    public DeporteDTO createDeporte(DeporteCreateDTO requestBody) {
 
-        if (deporteCreateDTO == null || deporteCreateDTO.getNombre() == null || deporteCreateDTO.getNombre().isEmpty()) {
+        if (requestBody == null || requestBody.getNombre() == null || requestBody.getNombre().isEmpty()) {
             throw new IllegalArgumentException("Deporte name cannot be null or empty");
         }
-        if (deporteRepository.existsByNombre(deporteCreateDTO.getNombre())) {
-            throw new IllegalArgumentException("Deporte with name " + deporteCreateDTO.getNombre() + " already exists");
+        if (deporteRepository.existsByNombre(requestBody.getNombre())) {
+            throw new IllegalArgumentException("Deporte with name " + requestBody.getNombre() + " already exists");
         }
         Deporte deporte = new Deporte();
-        deporte.setNombre(deporteCreateDTO.getNombre());
-        deporte.setDescripcion(deporte.getDescripcion());
+        deporte.setNombre(requestBody.getNombre());
+        deporte.setDescripcion(requestBody.getDescripcion());
 
         Deporte savedDeporte = deporteRepository.save(deporte);
 
@@ -64,19 +65,19 @@ public class DeporteService implements IDeporteService {
         deporteRepository.deleteById(id);
     }
 
-    public DeporteDTO updateDeporte(Long id, DeporteDTO deporteDTO) {
+    public DeporteDTO updateDeporte(Long id, DeporteCreateDTO requestBody) {
 
         if (id == null || id <= 0) {
             throw new IllegalArgumentException("ID must be a positive number");
         }
 
-        if (deporteDTO == null || deporteDTO.getNombre() == null || deporteDTO.getNombre().isEmpty()) {
+        if (requestBody == null || requestBody.getNombre() == null || requestBody.getNombre().isEmpty()) {
             throw new IllegalArgumentException("Deporte name cannot be null or empty");
         }
 
-        Deporte deporte = deporteRepository.findById(id).orElseThrow(() -> new RuntimeException("Deporte not found with id " + id));;
-        deporte.setNombre(deporteDTO.getNombre());
-        deporte.setDescripcion(deporteDTO.getDescripcion());
+        Deporte deporte = deporteRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Deporte not found with id " + id));;
+        deporte.setNombre(requestBody.getNombre());
+        deporte.setDescripcion(requestBody.getDescripcion());
 
         return toDTO(deporteRepository.save(deporte));
 

@@ -16,7 +16,7 @@ public class Nivel {
     @Column(name = "nivel_id", nullable = false)
     private Long id;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "deporte_id", nullable = false)
     private Deporte deporte;
 
