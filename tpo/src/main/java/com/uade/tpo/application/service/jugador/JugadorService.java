@@ -51,6 +51,7 @@ public class JugadorService implements IJugadorService {
         jugador.setNombre(requestBody.getNombre());
         jugador.setEmail(requestBody.getEmail());
         jugador.setUbicacion(requestBody.getUbicacion());
+        jugador.setFormaNotificar(requestBody.getFormaNotificar());
 
         return toDTO(jugadorRepository.save(jugador));
     }

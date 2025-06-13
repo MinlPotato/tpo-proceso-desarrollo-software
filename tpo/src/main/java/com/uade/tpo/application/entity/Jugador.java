@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.uade.tpo.application.dto.JugadorCreateDTO;
 import com.uade.tpo.application.dto.JugadorDTO;
+import com.uade.tpo.application.enums.FormaNotificar;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,6 +22,7 @@ public class Jugador {
         this.nombre = jugadorCreateDTO.getNombre();
         this.email = jugadorCreateDTO.getEmail();
         this.ubicacion = jugadorCreateDTO.getUbicacion();
+        this.formaNotificar = jugadorCreateDTO.getFormaNotificar();
     }
 
     @Id
@@ -46,5 +48,7 @@ public class Jugador {
             inverseJoinColumns = @JoinColumn(name = "deporte_id"))
     private List<Deporte> deportes;
 
+    @Column(name = "forma_notificar", nullable = false)
+    private FormaNotificar formaNotificar;
 
 }
