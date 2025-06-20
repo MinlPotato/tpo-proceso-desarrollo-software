@@ -54,5 +54,8 @@ public class Partido {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "resultado_id", referencedColumnName = "resultado_final_id")
     private ResultadoFinal resultado;
+    @Column(name = "tipo_admision", nullable = false)
+    private String tipoAdmision;
+
 
 }
