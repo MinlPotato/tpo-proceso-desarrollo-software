@@ -10,6 +10,15 @@ import java.util.List;
 @Entity
 public class Equipo {
 
+    public Equipo() {
+        // Constructor por defecto necesario para JPA
+    }
+    public Equipo(String nombre, Partido partido, List<Jugador> jugadores) {
+        this.nombre = nombre;
+        this.partido = partido;
+        this.jugadores = jugadores;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "equipo_id", nullable = false)
@@ -30,38 +39,7 @@ public class Equipo {
         inverseJoinColumns = @JoinColumn(name = "jugador_id")
     )
     private List<Jugador> jugadores;
-    public Equipo() {
-        // Constructor por defecto necesario para JPA
-    }
-    public Equipo(String nombre, Partido partido, List<Jugador> jugadores) {
-        this.nombre = nombre;
-        this.partido = partido;
-        this.jugadores = jugadores;
-    }
-    public void setJugadores(List<Jugador> jugadores) {
-        this.jugadores = jugadores;
-    }
-    public List<Jugador> getJugadores() {
-        return jugadores;
-    }
-    public void setPartido(Partido partido) {
-        this.partido = partido;
-    }
-    public Partido getPartido() {
-        return partido;
-    }
-    public Long getId() {
-        return id;
-    }
-    public void setId(Long id) {
-        this.id = id;
-    }
-    public String getNombre() {
-        return nombre;
-    }
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
+
     public boolean unirse(Jugador jugador) {
         if (jugadores == null) {
             jugadores = new java.util.ArrayList<>();

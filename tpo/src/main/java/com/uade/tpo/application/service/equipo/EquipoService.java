@@ -47,7 +47,7 @@ public class EquipoService implements IEquipoService {
         if (dto.getNombre() == null || dto.getIdPartido() == null) {
             throw new IllegalArgumentException("El nombre del equipo y el ID del partido no pueden ser nulos");
         }
-        if (dto.getJugadoresIds() == null || dto.getJugadoresIds().isEmpty()) {
+        if (dto.getJugadores() == null || dto.getJugadores().isEmpty()) {
             throw new IllegalArgumentException("La lista de jugadores no puede estar vacía");
         }
 
@@ -55,7 +55,7 @@ public class EquipoService implements IEquipoService {
         .orElseThrow(() -> new RuntimeException("Partido no encontrado con ID: " + dto.getIdPartido()));
 
         // Obtener los jugadores por ID
-        List<Jugador> jugadores = jugadorRepository.findAllById(dto.getJugadoresIds());
+        List<Jugador> jugadores = jugadorRepository.findAllById(dto.getJugadores());
 
         // Crear y poblar la entidad Equipo
         Equipo equipo = new Equipo();
@@ -83,13 +83,13 @@ public class EquipoService implements IEquipoService {
         equipo.setNombre(requestBody.getNombre());
 
         // Validar y actualizar el partido
-        Long idPartido = requestBody.getIDPartido();
+        Long idPartido = requestBody.getIdPartido();
         Partido partido = partidoRepository.findById(idPartido)
             .orElseThrow(() -> new RuntimeException("Partido no encontrado con ID: " + idPartido));
         equipo.setPartido(partido);
 
         // Actualizar los jugadores
-        List<Long> jugadoresIds = requestBody.getJugadoresIds();
+        List<Long> jugadoresIds = requestBody.getJugadores();
         equipo.setJugadores(jugadorRepository.findAllById(jugadoresIds));
 
         // Guardar y devolver el DTO actualizado
