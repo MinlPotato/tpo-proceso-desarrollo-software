@@ -11,14 +11,13 @@ public class PartidoDTO {
     private String ubicacion;
     private Integer cantidadEquipos;
     private Integer cantidadJugadoresPorEquipo;
-    private String tipoAdmision;
     private EstadoDTO estado;
 
-    public PartidoDTO() {}
+    public PartidoDTO(Long long1, Double double1, Date date, String string, Long long2) {}
 
     public PartidoDTO(Long id, Long idCreador, Long idDeporte, Double duracion, Date horario,
                       String ubicacion, Integer cantidadEquipos, Integer cantidadJugadoresPorEquipo,
-                      String tipoAdmision, EstadoDTO estado) {
+                       EstadoDTO estado) {
         this.id = id;
         this.idCreador = idCreador;
         this.idDeporte = idDeporte;
@@ -27,7 +26,6 @@ public class PartidoDTO {
         this.ubicacion = ubicacion;
         this.cantidadEquipos = cantidadEquipos;
         this.cantidadJugadoresPorEquipo = cantidadJugadoresPorEquipo;
-        this.tipoAdmision = tipoAdmision;
         this.estado = estado;
     }
 
@@ -48,8 +46,6 @@ public class PartidoDTO {
     public void setCantidadEquipos(Integer cantidadEquipos) { this.cantidadEquipos = cantidadEquipos; }
     public Integer getCantidadJugadoresPorEquipo() { return cantidadJugadoresPorEquipo; }
     public void setCantidadJugadoresPorEquipo(Integer cantidadJugadoresPorEquipo) { this.cantidadJugadoresPorEquipo = cantidadJugadoresPorEquipo; }
-    public String getTipoAdmision() { return tipoAdmision; }
-    public void setTipoAdmision(String tipoAdmision) { this.tipoAdmision = tipoAdmision; }
     public EstadoDTO getEstado() { return estado; }
     public void setEstado(EstadoDTO estado) { this.estado = estado; }
 }

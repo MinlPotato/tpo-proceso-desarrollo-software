@@ -1,17 +1,27 @@
 package com.uade.tpo.application.service.partido;
 
 import com.uade.tpo.application.dto.EstadoDTO;
+import com.uade.tpo.application.dto.JugadorDTO;
+import com.uade.tpo.application.dto.NivelDTO;
 import com.uade.tpo.application.dto.PartidoCreateDTO;
 import com.uade.tpo.application.dto.PartidoDTO;
+import com.uade.tpo.application.entity.Jugador;
 import com.uade.tpo.application.entity.Partido;
 import com.uade.tpo.application.repository.DeporteRepository;
 import com.uade.tpo.application.repository.EquipoRepository;
 import com.uade.tpo.application.repository.JugadorRepository;
 import com.uade.tpo.application.repository.PartidoRepository;
+import com.uade.tpo.application.service.jugador.JugadorService;
 import com.uade.tpo.application.service.state.partido.PartidoArmado;
+import com.uade.tpo.application.service.strategy.partido.FiltrarPorHistorial;
+import com.uade.tpo.application.service.strategy.partido.FiltrarPorNivel;
+import com.uade.tpo.application.service.strategy.partido.FiltrarPorUbicacion;
+import com.uade.tpo.application.service.strategy.partido.StrategyFiltrarPartido;
+
 import jakarta.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.web.WebProperties.Resources.Chain.Strategy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -99,6 +109,29 @@ public class PartidoService implements IPartidoService {
         return true;
     }
 
+    public List<PartidoDTO> filtrar(Long jugadorID, String tipoDeFiltro ){
+        Jugador jugador = jugadorRepository.findById(jugadorID)
+                .orElseThrow(() -> new EntityNotFoundException("Jugador no encontrado: " + jugadorID));
+        JugadorDTO jugadorDTO = new JugadorDTO(jugador.getId(), jugador.getNombre(), jugador.getEmail(), jugador.getUbicacion(), jugador.getNiveles()
+                .stream()
+                .map(nivel -> new NivelDTO(nivel.getId(), nivel.getJugador().getId(), nivel.getDeporte().getId(), nivel.getNivel(), nivel.getFavorito()))
+                .collect(Collectors.toList()));
+        StrategyFiltrarPartido strategy;
+        switch (tipoDeFiltro.toLowerCase()) {
+            case "historial":
+                strategy = new FiltrarPorHistorial();
+                return strategy.filtrar(jugadorDTO, partidoRepository);
+            case "nivel":
+                strategy = new FiltrarPorNivel();
+                return strategy.filtrar(jugadorDTO, partidoRepository);
+            case "ubicacion":
+                strategy = new FiltrarPorUbicacion();
+                return strategy.filtrar(jugadorDTO, partidoRepository);
+            default:
+                throw new IllegalArgumentException("Tipo de filtro no soportado: " + tipoDeFiltro);
+        }
+    }
+
     private PartidoDTO toDTO(Partido p) {
         EstadoDTO est = p.getEstado() != null
                 ? new EstadoDTO(p.getEstado().getNombre(), p.getEstado().getDescripcion(), p.getEstado().getMensaje())
@@ -114,8 +147,8 @@ public class PartidoService implements IPartidoService {
                 p.getUbicacion(),
                 cntEq,
                 cntJug,
-                p.getTipoAdmision() != null ? p.getTipoAdmision() : null,
                 est
         );
     }
+
 }

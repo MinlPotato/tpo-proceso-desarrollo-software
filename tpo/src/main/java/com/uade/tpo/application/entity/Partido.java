@@ -1,7 +1,6 @@
 package com.uade.tpo.application.entity;
 
 import com.uade.tpo.application.service.state.partido.EstadoPartido;
-import com.uade.tpo.application.service.strategy.partido.StrategyAdmisionPartido;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,8 +26,6 @@ public class Partido {
     @JoinColumn(name = "deporte_id", nullable = false)
     private Deporte deporte;
 
-    @Transient
-    private List<StrategyAdmisionPartido> admitidos;
 
     @Column(nullable = false)
     private Double duracion; // En horas

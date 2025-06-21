@@ -13,4 +13,7 @@ public interface IPartidoService {
     void deletePartido(Long id);
     boolean avanzarPartido(Long id);
     boolean cancelarPartido(Long id);
+    //filtros de partidos para emparejar jugadores
+    List<PartidoDTO>filtrar(Long jugadorId,String tipofiltro);
+
 }
