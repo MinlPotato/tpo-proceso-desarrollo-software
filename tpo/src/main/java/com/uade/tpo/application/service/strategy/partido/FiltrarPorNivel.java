@@ -34,6 +34,7 @@ public class FiltrarPorNivel implements StrategyFiltrarPartido {
                 return List.of(); // Retornar una lista vacía si no hay partidos en el nivel
             }
             return partidos.stream()
+                    .filter(partido -> "Necesita Jugadores".equals(partido.getEstado().getNombre()))
                     .map(partido -> new PartidoDTO(partido.getId(), partido.getDuracion(), partido.getHorario(),
                             partido.getUbicacion(), partido.getCreador().getId()))
                     .toList();

@@ -20,9 +20,14 @@ public class FiltrarPorHistorial implements StrategyFiltrarPartido {
                 return List.of(); // Retornar una lista vacía si no hay partidos en el historial
             }
             return historialPartidos.stream()
-                    .map(partido -> new PartidoDTO(partido.getId(), partido.getDuracion(), partido.getHorario(),
-                            partido.getUbicacion(), partido.getCreador().getId()))
-                    .toList();
+                .filter(partido -> "Necesita Jugadores".equals(partido.getEstado().getNombre()))
+                .map(partido -> new PartidoDTO(
+                        partido.getId(),
+                        partido.getDuracion(),
+                        partido.getHorario(),
+                        partido.getUbicacion(),
+                        partido.getCreador().getId()))
+                .toList();
         } catch (Exception e) {
             // TODO: handle exception
         }

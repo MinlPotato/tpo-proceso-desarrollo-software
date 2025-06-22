@@ -28347,7 +28347,7 @@
 											"parentStyle": true,
 											"left": 2525,
 											"top": 367,
-											"width": 204.88037109375,
+											"width": 281.947265625,
 											"height": 13,
 											"text": "Strategy FiltrarPartidos"
 										},
@@ -28381,7 +28381,7 @@
 									"parentStyle": true,
 									"left": 2520,
 									"top": 360,
-									"width": 214.88037109375,
+									"width": 291.947265625,
 									"height": 25,
 									"stereotypeLabel": {
 										"$ref": "AAAAAAGXR6P6xo7xAts="
@@ -28434,9 +28434,9 @@
 											"parentStyle": true,
 											"left": 2525,
 											"top": 390,
-											"width": 204.88037109375,
+											"width": 281.947265625,
 											"height": 13,
-											"text": "+filtrar(): List<PartidoDTO>",
+											"text": "+filtrar(jugador: JugadorDTO): List<PartidoDTO>",
 											"horizontalAlignment": 0
 										}
 									],
@@ -28444,7 +28444,7 @@
 									"parentStyle": true,
 									"left": 2520,
 									"top": 385,
-									"width": 214.88037109375,
+									"width": 291.947265625,
 									"height": 23
 								},
 								{
@@ -28483,7 +28483,7 @@
 							"containerChangeable": true,
 							"left": 2520,
 							"top": 336,
-							"width": 213.88037109375,
+							"width": 290.947265625,
 							"height": 72,
 							"stereotypeDisplay": "icon",
 							"nameCompartment": {
@@ -28545,7 +28545,7 @@
 											"parentStyle": true,
 											"left": 2301,
 											"top": 183,
-											"width": 208.49853515625,
+											"width": 284.83544921875,
 											"height": 13,
 											"text": "FiltrarPorNivel"
 										},
@@ -28581,7 +28581,7 @@
 									"parentStyle": true,
 									"left": 2296,
 									"top": 176,
-									"width": 218.49853515625,
+									"width": 294.83544921875,
 									"height": 25,
 									"stereotypeLabel": {
 										"$ref": "AAAAAAGXR6WvBqRnDAk="
@@ -28630,7 +28630,7 @@
 									"parentStyle": true,
 									"left": 2296,
 									"top": 201,
-									"width": 218.49853515625,
+									"width": 294.83544921875,
 									"height": 10
 								},
 								{
@@ -28656,9 +28656,9 @@
 											"parentStyle": true,
 											"left": 2301,
 											"top": 216,
-											"width": 208.49853515625,
+											"width": 284.83544921875,
 											"height": 13,
-											"text": "+filtrar(): List<PartidoDTO>",
+											"text": "+filtrar(ijugador: JugadorDTO): List<PartidoDTO>",
 											"horizontalAlignment": 0
 										}
 									],
@@ -28666,7 +28666,7 @@
 									"parentStyle": true,
 									"left": 2296,
 									"top": 211,
-									"width": 218.49853515625,
+									"width": 294.83544921875,
 									"height": 23
 								},
 								{
@@ -28707,7 +28707,7 @@
 							"containerChangeable": true,
 							"left": 2296,
 							"top": 176,
-							"width": 217.49853515625,
+							"width": 293.83544921875,
 							"height": 71,
 							"nameCompartment": {
 								"$ref": "AAAAAAGXR6WvBqRmu2U="
@@ -28766,7 +28766,7 @@
 											"parentStyle": true,
 											"left": 2637,
 											"top": 199,
-											"width": 204.88037109375,
+											"width": 284.83544921875,
 											"height": 13,
 											"text": "FiltrarPorUbicacion"
 										},
@@ -28800,7 +28800,7 @@
 									"parentStyle": true,
 									"left": 2632,
 									"top": 192,
-									"width": 214.88037109375,
+									"width": 294.83544921875,
 									"height": 25,
 									"stereotypeLabel": {
 										"$ref": "AAAAAAGXR6Xsa65URFE="
@@ -28849,7 +28849,7 @@
 									"parentStyle": true,
 									"left": 2632,
 									"top": 217,
-									"width": 214.88037109375,
+									"width": 294.83544921875,
 									"height": 10
 								},
 								{
@@ -28875,9 +28875,9 @@
 											"parentStyle": true,
 											"left": 2637,
 											"top": 232,
-											"width": 204.88037109375,
+											"width": 284.83544921875,
 											"height": 13,
-											"text": "+filtrar(): List<PartidoDTO>",
+											"text": "+filtrar(ijugador: JugadorDTO): List<PartidoDTO>",
 											"horizontalAlignment": 0
 										}
 									],
@@ -28885,7 +28885,7 @@
 									"parentStyle": true,
 									"left": 2632,
 									"top": 227,
-									"width": 214.88037109375,
+									"width": 294.83544921875,
 									"height": 23
 								},
 								{
@@ -28924,7 +28924,7 @@
 							"containerChangeable": true,
 							"left": 2632,
 							"top": 192,
-							"width": 213.88037109375,
+							"width": 293.83544921875,
 							"height": 71,
 							"nameCompartment": {
 								"$ref": "AAAAAAGXR6Xsaq5TPRg="
@@ -28983,7 +28983,7 @@
 											"parentStyle": true,
 											"left": 2925,
 											"top": 207,
-											"width": 204.88037109375,
+											"width": 284.83544921875,
 											"height": 13,
 											"text": "FiltrarPorHistorial"
 										},
@@ -29017,7 +29017,7 @@
 									"parentStyle": true,
 									"left": 2920,
 									"top": 200,
-									"width": 214.88037109375,
+									"width": 294.83544921875,
 									"height": 25,
 									"stereotypeLabel": {
 										"$ref": "AAAAAAGXR6YrRbhBA0U="
@@ -29066,7 +29066,7 @@
 									"parentStyle": true,
 									"left": 2920,
 									"top": 225,
-									"width": 214.88037109375,
+									"width": 294.83544921875,
 									"height": 10
 								},
 								{
@@ -29092,9 +29092,9 @@
 											"parentStyle": true,
 											"left": 2925,
 											"top": 240,
-											"width": 204.88037109375,
+											"width": 284.83544921875,
 											"height": 13,
-											"text": "+filtrar(): List<PartidoDTO>",
+											"text": "+filtrar(ijugador: JugadorDTO): List<PartidoDTO>",
 											"horizontalAlignment": 0
 										}
 									],
@@ -29102,7 +29102,7 @@
 									"parentStyle": true,
 									"left": 2920,
 									"top": 235,
-									"width": 214.88037109375,
+									"width": 294.83544921875,
 									"height": 23
 								},
 								{
@@ -29141,7 +29141,7 @@
 							"containerChangeable": true,
 							"left": 2920,
 							"top": 200,
-							"width": 213.88037109375,
+							"width": 293.83544921875,
 							"height": 71,
 							"nameCompartment": {
 								"$ref": "AAAAAAGXR6YrRbhAsFI="
@@ -29181,7 +29181,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"parentStyle": false,
-									"left": 2541,
+									"left": 2580,
 									"top": 277,
 									"height": 13,
 									"alpha": 1.5707963267948966,
@@ -29203,7 +29203,7 @@
 									"visible": null,
 									"font": "Arial;13;0",
 									"parentStyle": false,
-									"left": 2549,
+									"left": 2588,
 									"top": 264,
 									"height": 13,
 									"alpha": 1.5707963267948966,
@@ -29225,7 +29225,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"parentStyle": false,
-									"left": 2526,
+									"left": 2565,
 									"top": 302,
 									"height": 13,
 									"alpha": -1.5707963267948966,
@@ -29245,7 +29245,7 @@
 								"$ref": "AAAAAAGXR6WvBqRl3bU="
 							},
 							"lineStyle": 1,
-							"points": "2455:248;2614.940185546875:345.18083160998776",
+							"points": "2493:248;2653.4736328125:345.0619064031863",
 							"showVisibility": true,
 							"nameLabel": {
 								"$ref": "AAAAAAGXR6Zoi8/08sw="
@@ -29279,8 +29279,8 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"parentStyle": false,
-									"left": 2684,
-									"top": 306,
+									"left": 2724,
+									"top": 307,
 									"height": 13,
 									"alpha": 1.5707963267948966,
 									"distance": 15,
@@ -29301,8 +29301,8 @@
 									"visible": null,
 									"font": "Arial;13;0",
 									"parentStyle": false,
-									"left": 2695,
-									"top": 316,
+									"left": 2735,
+									"top": 317,
 									"height": 13,
 									"alpha": 1.5707963267948966,
 									"distance": 30,
@@ -29323,8 +29323,8 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"parentStyle": false,
-									"left": 2661,
-									"top": 287,
+									"left": 2701,
+									"top": 286,
 									"height": 13,
 									"alpha": -1.5707963267948966,
 									"distance": 15,
@@ -29343,7 +29343,7 @@
 								"$ref": "AAAAAAGXR6Xsaq5SSDU="
 							},
 							"lineStyle": 1,
-							"points": "2709:264;2638.940185546875:342.19922716864227",
+							"points": "2749:264;2677.4736328125:342.4083714978448",
 							"showVisibility": true,
 							"nameLabel": {
 								"$ref": "AAAAAAGXR6Z8L+Qe+Mk="
@@ -29377,7 +29377,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"parentStyle": false,
-									"left": 2781,
+									"left": 2820,
 									"top": 317,
 									"height": 13,
 									"alpha": 1.5707963267948966,
@@ -29399,7 +29399,7 @@
 									"visible": null,
 									"font": "Arial;13;0",
 									"parentStyle": false,
-									"left": 2785,
+									"left": 2824,
 									"top": 331,
 									"height": 13,
 									"alpha": 1.5707963267948966,
@@ -29421,7 +29421,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"parentStyle": false,
-									"left": 2774,
+									"left": 2813,
 									"top": 288,
 									"height": 13,
 									"alpha": -1.5707963267948966,
@@ -29441,7 +29441,7 @@
 								"$ref": "AAAAAAGXR6YrRbg/i7k="
 							},
 							"lineStyle": 1,
-							"points": "2919:272;2638.940185546875:346.44238507306136",
+							"points": "2958:272;2677.4736328125:346.4985441984954",
 							"showVisibility": true,
 							"nameLabel": {
 								"$ref": "AAAAAAGXR6aV6POwf5k="
@@ -41608,6 +41608,17 @@
 									},
 									"type": "List<PartidoDTO>",
 									"direction": "return"
+								},
+								{
+									"_type": "UMLParameter",
+									"_id": "AAAAAAGXj6UKGgRVA/k=",
+									"_parent": {
+										"$ref": "AAAAAAGXR6SatJaP23M="
+									},
+									"name": "jugador",
+									"type": {
+										"$ref": "AAAAAAGXPJwKYwCRlRc="
+									}
 								}
 							]
 						}
@@ -41666,6 +41677,17 @@
 									},
 									"type": "List<PartidoDTO>",
 									"direction": "return"
+								},
+								{
+									"_type": "UMLParameter",
+									"_id": "AAAAAAGXj6VJKhLma40=",
+									"_parent": {
+										"$ref": "AAAAAAGXR6dltTR30pM="
+									},
+									"name": "ijugador",
+									"type": {
+										"$ref": "AAAAAAGXPJwKYwCRlRc="
+									}
 								}
 							]
 						}
@@ -41722,6 +41744,17 @@
 									},
 									"type": "List<PartidoDTO>",
 									"direction": "return"
+								},
+								{
+									"_type": "UMLParameter",
+									"_id": "AAAAAAGXj6WC3CXlzdw=",
+									"_parent": {
+										"$ref": "AAAAAAGXR6fMelORQYw="
+									},
+									"name": "ijugador",
+									"type": {
+										"$ref": "AAAAAAGXPJwKYwCRlRc="
+									}
 								}
 							]
 						}
@@ -41778,6 +41811,17 @@
 									},
 									"type": "List<PartidoDTO>",
 									"direction": "return"
+								},
+								{
+									"_type": "UMLParameter",
+									"_id": "AAAAAAGXj6Y0dX3hRMw=",
+									"_parent": {
+										"$ref": "AAAAAAGXR6g0fGZcYG8="
+									},
+									"name": "ijugador",
+									"type": {
+										"$ref": "AAAAAAGXPJwKYwCRlRc="
+									}
 								}
 							]
 						}

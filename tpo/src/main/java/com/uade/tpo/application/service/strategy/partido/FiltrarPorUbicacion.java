@@ -22,6 +22,8 @@ public class FiltrarPorUbicacion implements StrategyFiltrarPartido {
                 return List.of(); // Retornar una lista vacía si no hay partidos en la ubicación
             }
             return partidosFiltrados.stream()
+
+                    .filter(partido -> partido.getEstado().getNombre().equals("Necesita Jugadores"))
                     .map(partido -> new PartidoDTO(partido.getId(), partido.getDuracion(), partido.getHorario(),
                             partido.getUbicacion(), partido.getCreador().getId()))
                     .toList();
