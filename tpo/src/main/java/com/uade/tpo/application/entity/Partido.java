@@ -1,5 +1,6 @@
 package com.uade.tpo.application.entity;
 
+import com.uade.tpo.application.enums.NivelDeporte;
 import com.uade.tpo.application.service.state.partido.EstadoPartido;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -25,7 +26,6 @@ public class Partido {
     @ManyToOne
     @JoinColumn(name = "deporte_id", nullable = false)
     private Deporte deporte;
-
 
     @Column(nullable = false)
     private Double duracion; // En horas

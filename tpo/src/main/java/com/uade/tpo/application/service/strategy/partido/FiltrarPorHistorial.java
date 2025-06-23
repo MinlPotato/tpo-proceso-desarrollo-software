@@ -10,7 +10,7 @@ import com.uade.tpo.application.repository.PartidoRepository;
 public class FiltrarPorHistorial implements StrategyFiltrarPartido {
 
     @Override
-    public List<PartidoDTO> filtrar(JugadorDTO jugador, PartidoRepository PartidoRepository) {
+    public List<Partido> filtrar(JugadorDTO jugador, PartidoRepository PartidoRepository) {
         try {
             // Obtener el historial de partidos del jugador
             List<Partido> historialPartidos = PartidoRepository.findByJugadorId(jugador.getId());

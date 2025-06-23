@@ -11,7 +11,7 @@ import com.uade.tpo.application.repository.PartidoRepository;
 public class FiltrarPorNivel implements StrategyFiltrarPartido {
 
     @Override
-    public List<PartidoDTO> filtrar(JugadorDTO jugador,PartidoRepository partidoRepository) {
+    public List<Partido> filtrar(JugadorDTO jugador, PartidoRepository partidoRepository) {
         try {
             List<Partido> partidos = null;
             List<NivelDTO> niveles = jugador.getNiveles();

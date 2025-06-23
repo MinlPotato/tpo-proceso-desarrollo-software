@@ -152,7 +152,7 @@ public class PartidoService implements IPartidoService {
         switch (tipoDeFiltro.toLowerCase()) {
             case "historial":
                 strategy = new FiltrarPorHistorial();
-                return strategy.filtrar(jugadorDTO, partidoRepository);
+                return strategy.filtrar(jugadorDTO, partidoRepository).stream().map(this::toDTO).toList();
             case "nivel":
                 strategy = new FiltrarPorNivel();
                 return strategy.filtrar(jugadorDTO, partidoRepository);
