@@ -57,5 +57,9 @@ public class Partido {
     @Column(name = "tipo_admision", nullable = false)
     private String tipoAdmision;
 
+    // --- Nuevo campo ---
+    @Column(name = "min_jugadores_necesarios", nullable = false)
+    private int minJugadoresNecesarios;
+
 
 }

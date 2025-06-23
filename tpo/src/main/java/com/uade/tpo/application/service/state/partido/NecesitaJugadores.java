@@ -1,14 +1,47 @@
 package com.uade.tpo.application.service.state.partido;
+
+import com.uade.tpo.application.dto.EstadoDTO;
 import com.uade.tpo.application.entity.Partido;
 
 public class NecesitaJugadores implements EstadoPartido {
-    private final String nombre = "Necesita Jugadores";
-    private final String descripcion = "Faltan jugadores para completar equipos";
-    private final String mensaje = "Esperando más jugadores.";
 
-    @Override public String getNombre() { return nombre; }
-    @Override public String getDescripcion() { return descripcion; }
-    @Override public String getMensaje() { return mensaje; }
-    @Override public EstadoPartido avanzar(Partido partido) { return new Confirmado(); }
-    @Override public EstadoPartido cancelar(Partido partido) { return new Cancelado(); }
+    @Override
+    public EstadoPartido avanzar(Partido p) {
+        int totalJugadores = 0;
+        if (p.getEquipos() != null) {
+            totalJugadores = p.getEquipos().stream()
+                    .mapToInt(e -> e.getJugadores().size())
+                    .sum();
+        }
+
+        if (totalJugadores >= p.getMinJugadoresNecesarios()) {
+            return new Confirmado();
+        }
+        return this;
+    }
+
+    @Override
+    public EstadoPartido cancelar(Partido p) {
+        return new Cancelado();
+    }
+
+    @Override
+    public String getNombre() {
+        return "Necesita Jugadores";
+    }
+
+    @Override
+    public String getDescripcion() {
+        return "El partido requiere más jugadores antes de confirmar";
+    }
+
+    @Override
+    public String getMensaje() {
+        return "Inscríbete para completar el cupo";
+    }
+
+    @Override
+    public EstadoDTO toDTO() {
+        return new EstadoDTO(getNombre(), getDescripcion(), getMensaje());
+    }
 }

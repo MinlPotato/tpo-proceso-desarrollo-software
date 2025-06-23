@@ -1,14 +1,39 @@
 package com.uade.tpo.application.service.state.partido;
 
-import com.uade.tpo.application.entity.Partido;
-public class PartidoArmado implements EstadoPartido {
-    private final String nombre = "Armado";
-    private final String descripcion = "Partido armado, esperando inscripciones";
-    private final String mensaje = "El partido está armado y listo para inscripción.";
 
-    @Override public String getNombre() { return nombre; }
-    @Override public String getDescripcion() { return descripcion; }
-    @Override public String getMensaje() { return mensaje; }
-    @Override public EstadoPartido avanzar(Partido partido) { return new Confirmado(); }
-    @Override public EstadoPartido cancelar(Partido partido) { return new Cancelado(); }
+import com.uade.tpo.application.dto.EstadoDTO;
+import com.uade.tpo.application.entity.Partido;
+
+public class PartidoArmado implements EstadoPartido {
+
+    @Override
+    public EstadoPartido avanzar(Partido p) {
+        // Pasa a NecesitaJugadores
+        return new NecesitaJugadores();
+    }
+
+    @Override
+    public EstadoPartido cancelar(Partido p) {
+        return new Cancelado();
+    }
+
+    @Override
+    public String getNombre() {
+        return "Partido Armado";
+    }
+
+    @Override
+    public String getDescripcion() {
+        return "El partido ha sido armado y espera inscripciones";
+    }
+
+    @Override
+    public String getMensaje() {
+        return "Listo para recibir jugadores";
+    }
+
+    @Override
+    public EstadoDTO toDTO() {
+        return new EstadoDTO(getNombre(), getDescripcion(), getMensaje());
+    }
 }

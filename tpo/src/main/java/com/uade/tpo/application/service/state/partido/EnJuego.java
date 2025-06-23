@@ -1,15 +1,37 @@
 package com.uade.tpo.application.service.state.partido;
 
+import com.uade.tpo.application.dto.EstadoDTO;
 import com.uade.tpo.application.entity.Partido;
 
 public class EnJuego implements EstadoPartido {
-    private final String nombre = "En Juego";
-    private final String descripcion = "Partido en curso";
-    private final String mensaje = "El partido está en juego.";
 
-    @Override public String getNombre() { return nombre; }
-    @Override public String getDescripcion() { return descripcion; }
-    @Override public String getMensaje() { return mensaje; }
-    @Override public EstadoPartido avanzar(Partido partido) { return new Finalizado(); }
-    @Override public EstadoPartido cancelar(Partido partido) { return new Cancelado(); }
+    @Override
+    public EstadoPartido avanzar(Partido p) {
+        return new Finalizado();
+    }
+
+    @Override
+    public EstadoPartido cancelar(Partido p) {
+        return new Cancelado();
+    }
+
+    @Override
+    public String getNombre() {
+        return "En Juego";
+    }
+
+    @Override
+    public String getDescripcion() {
+        return "El partido se está llevando a cabo";
+    }
+
+    @Override
+    public String getMensaje() {
+        return "Disfruta el juego";
+    }
+
+    @Override
+    public EstadoDTO toDTO() {
+        return new EstadoDTO(getNombre(), getDescripcion(), getMensaje());
+    }
 }

@@ -13,4 +13,5 @@ public class PartidoCreateDTO {
     private Integer cantidadEquipos;
     private Integer cantidadJugadoresPorEquipo;
     private String tipoAdmision;
+    private int minJugadoresNecesarios;
 }
