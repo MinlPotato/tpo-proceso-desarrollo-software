@@ -55,4 +55,12 @@ public class PartidoController {
         partidoService.cancelarPartido(id);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/filtrar")
+    public ResponseEntity<List<PartidoDTO>> filtrar(
+            @RequestParam Long jugadorId,
+            @RequestParam String tipofiltro) {
+        List<PartidoDTO> partidosFiltrados = partidoService.filtrar(jugadorId, tipofiltro);
+        return ResponseEntity.ok(partidosFiltrados);
+    }
 }
