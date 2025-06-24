@@ -2,6 +2,9 @@ package com.uade.tpo.application.dto;
 
 import lombok.Getter;
 import java.util.Date;
+import java.util.List;
+
+import com.uade.tpo.application.enums.NivelDeporte;
 
 @Getter
 public class PartidoCreateDTO {
@@ -12,6 +15,5 @@ public class PartidoCreateDTO {
     private String ubicacion;
     private Integer cantidadEquipos;
     private Integer cantidadJugadoresPorEquipo;
-    private String tipoAdmision;
-    private int minJugadoresNecesarios;
+    private List<NivelDeporte> nivelesJugadores;
 }

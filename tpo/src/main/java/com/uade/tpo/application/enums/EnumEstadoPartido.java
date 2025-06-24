@@ -1,6 +1,6 @@
-package com.uade.tpo.application.enums
+package com.uade.tpo.application.enums;
 
-enum class EnumEstadoPartido {
+public enum  EnumEstadoPartido {
     PARTIDO_ARMADO,
     NECESITA_JUGADORES,
     CONFIRMADO,

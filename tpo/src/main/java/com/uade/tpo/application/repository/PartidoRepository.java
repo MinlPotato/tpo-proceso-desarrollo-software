@@ -15,9 +15,7 @@ public interface PartidoRepository extends JpaRepository<Partido, Long> {
 
     List<Partido> findByDeporteId(Long deporteId);
 
-    List<Partido> findByNivel(Long nivelId);
 
     List<Partido> findByEquipoId(Long equipoId);
 
-    List<Partido> findByDeporteIdyNivelID(Long deporteId, Long nivelId);
 }

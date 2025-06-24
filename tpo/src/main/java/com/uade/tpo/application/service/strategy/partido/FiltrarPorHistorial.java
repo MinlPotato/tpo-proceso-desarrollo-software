@@ -3,8 +3,8 @@ package com.uade.tpo.application.service.strategy.partido;
 import java.util.List;
 
 import com.uade.tpo.application.dto.JugadorDTO;
-import com.uade.tpo.application.dto.PartidoDTO;
 import com.uade.tpo.application.entity.Partido;
+import com.uade.tpo.application.enums.EnumEstadoPartido;
 import com.uade.tpo.application.repository.PartidoRepository;
 
 public class FiltrarPorHistorial implements StrategyFiltrarPartido {
@@ -20,19 +20,13 @@ public class FiltrarPorHistorial implements StrategyFiltrarPartido {
                 return List.of(); // Retornar una lista vacía si no hay partidos en el historial
             }
             return historialPartidos.stream()
-                .filter(partido -> "Necesita Jugadores".equals(partido.getEstado().getNombre()))
-                .map(partido -> new PartidoDTO(
-                        partido.getId(),
-                        partido.getDuracion(),
-                        partido.getHorario(),
-                        partido.getUbicacion(),
-                        partido.getCreador().getId()))
+                .filter(partido ->partido.getEstado().equals(EnumEstadoPartido.NECESITA_JUGADORES))
+                
                 .toList();
         } catch (Exception e) {
+            throw new RuntimeException("Error al filtrar partidos por historial: " + e.getMessage(), e);
             // TODO: handle exception
         }
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'filtrar'");
     }
 
     

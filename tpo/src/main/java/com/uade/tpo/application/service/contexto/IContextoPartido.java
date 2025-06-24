@@ -1,7 +1,6 @@
 package com.uade.tpo.application.service.contexto;
 
 
-import com.uade.tpo.application.dto.EstadoDTO;
 import com.uade.tpo.application.entity.Partido;
 import com.uade.tpo.application.enums.EnumEstadoPartido;
 

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.uade.tpo.application.dto.JugadorCreateDTO;
-import com.uade.tpo.application.dto.JugadorDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

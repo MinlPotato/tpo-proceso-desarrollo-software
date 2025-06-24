@@ -14,7 +14,7 @@ public class NecesitaJugadores implements EstadoPartido {
                     .sum();
         }
 
-        if (totalJugadores >= p.getMinJugadoresNecesarios()) {
+        if (totalJugadores >= p.getCantidadJugadoresPorEquipo()) {
             return new Confirmado();
         }
         return this;

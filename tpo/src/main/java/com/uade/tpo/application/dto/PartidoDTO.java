@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
+
+import com.uade.tpo.application.enums.NivelDeporte;
 
 @Getter
 @Setter
@@ -20,5 +23,7 @@ public class PartidoDTO {
     private Integer cantidadEquipos;
     private Integer cantidadJugadoresPorEquipo;
     private EstadoDTO estado;
+    private List<EquipoDTO> equipos;
+    private List<NivelDeporte> nivelesJugadores;
 
 }

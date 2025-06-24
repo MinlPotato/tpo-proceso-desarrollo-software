@@ -1,6 +1,7 @@
 package com.uade.tpo.application.service.partido;
 
 import com.uade.tpo.application.dto.*;
+import com.uade.tpo.application.entity.Equipo;
 import com.uade.tpo.application.entity.Jugador;
 import com.uade.tpo.application.entity.Partido;
 import com.uade.tpo.application.enums.EnumEstadoPartido;
@@ -34,7 +35,6 @@ public class PartidoService implements IPartidoService {
     @Autowired private PartidoRepository partidoRepository;
     @Autowired private JugadorRepository jugadorRepository;
     @Autowired private DeporteRepository deporteRepository;
-    @Autowired private EquipoRepository equipoRepository;
 
     @Autowired private IContextoPartido contextoPartido;
     @Autowired private FactoryEstadoPartido factoryEstadoPartido;
@@ -68,7 +68,7 @@ public class PartidoService implements IPartidoService {
         // Inicializo el estado
         p.setEstado(factoryEstadoPartido.crearEstadoPartido(EnumEstadoPartido.PARTIDO_ARMADO));
         Partido saved = partidoRepository.save(p);
-        p.setMinJugadoresNecesarios(dto.getMinJugadoresNecesarios());
+        p.setCantidadJugadoresPorEquipo(dto.getCantidadJugadoresPorEquipo());
 
         return toDTO(saved);
 
@@ -155,35 +155,58 @@ public class PartidoService implements IPartidoService {
                 return strategy.filtrar(jugadorDTO, partidoRepository).stream().map(this::toDTO).toList();
             case "nivel":
                 strategy = new FiltrarPorNivel();
-                return strategy.filtrar(jugadorDTO, partidoRepository);
+                return strategy.filtrar(jugadorDTO, partidoRepository).stream().map(this::toDTO).toList();
             case "ubicacion":
                 strategy = new FiltrarPorUbicacion();
-                return strategy.filtrar(jugadorDTO, partidoRepository);
+                return strategy.filtrar(jugadorDTO, partidoRepository).stream().map(this::toDTO).toList();
             default:
                 throw new IllegalArgumentException("Tipo de filtro no soportado: " + tipoDeFiltro);
         }
     }
 
-    private PartidoDTO toDTO(Partido p) {
-        EstadoDTO est = p.getEstado() != null
-                ? new EstadoDTO(
-                p.getEstado().getNombre(),
-                p.getEstado().getDescripcion(),
-                p.getEstado().getMensaje())
-                : null;
-        int cntEq = p.getEquipos() != null ? p.getEquipos().size() : 0;
-        int cntJug = cntEq > 0 ? p.getEquipos().get(0).getJugadores().size() : 0;
-        return new PartidoDTO(
-                p.getId(),
-                p.getCreador().getId(),
-                p.getDeporte().getId(),
-                p.getDuracion(),
-                p.getHorario(),
-                p.getUbicacion(),
-                cntEq,
-                cntJug,
-                est
+private PartidoDTO toDTO(Partido partido) {
+    // Mapear estado si está presente
+    EstadoDTO estadoDTO = null;
+    if (partido.getEstado() != null) {
+        estadoDTO = new EstadoDTO(
+            partido.getEstado().getNombre(),
+            partido.getEstado().getDescripcion(),
+            partido.getEstado().getMensaje()
         );
     }
+
+    // Calcular cantidad de equipos
+    List<Equipo> equipos = partido.getEquipos();
+    int cantidadEquipos = (equipos != null) ? equipos.size() : 0;
+
+    // Calcular cantidad de jugadores por equipo (asumimos que todos tienen la misma cantidad)
+    int cantidadJugadoresPorEquipo = 0;
+    if (equipos != null && !equipos.isEmpty() && equipos.get(0).getJugadores() != null) {
+        cantidadJugadoresPorEquipo = equipos.get(0).getJugadores().size();
+    }
+
+    return new PartidoDTO(
+        partido.getId(),
+        (partido.getCreador() != null) ? partido.getCreador().getId() : null,
+        (partido.getDeporte() != null) ? partido.getDeporte().getId() : null,
+        partido.getDuracion(),
+        partido.getHorario(),
+        partido.getUbicacion(),
+        cantidadEquipos,
+        cantidadJugadoresPorEquipo,
+        estadoDTO,
+        equipos != null ? equipos.stream()
+            .map(equipo -> new EquipoDTO(
+                equipo.getId(),
+                equipo.getNombre(),
+                equipo.getPartido() != null ? equipo.getPartido().getId() : null,
+                equipo.getJugadores() != null ? equipo.getJugadores().stream()
+                    .map(Jugador::getId)
+                    .toList() : List.of()
+            )).toList() : List.of(),
+        partido.getNivelesJugadores()
+    );
+}
+
 
 }

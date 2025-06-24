@@ -40,6 +40,12 @@ public class Partido {
     @Transient
     private EstadoPartido estado;
 
+    @Column(name = "cantidad_equipos", nullable = false)
+    private Integer cantidadEquipos;
+    
+    @Column(name = "cantidad_jugadores_por_equipo", nullable = false)
+    private Integer cantidadJugadoresPorEquipo;
+
     @ManyToMany
     @JoinTable(
             name = "partido_equipo",
@@ -51,12 +57,13 @@ public class Partido {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "resultado_id", referencedColumnName = "resultado_final_id")
     private ResultadoFinal resultado;
-    @Column(name = "tipo_admision", nullable = false)
-    private String tipoAdmision;
 
-    // --- Nuevo campo ---
-    @Column(name = "min_jugadores_necesarios", nullable = false)
-    private int minJugadoresNecesarios;
+    @Column(name = "nivelesJugadores", nullable = false)
+    private List<NivelDeporte> nivelesJugadores;
+
+    public Partido() {
+        // Constructor por defecto
+    }
 
 
 }
