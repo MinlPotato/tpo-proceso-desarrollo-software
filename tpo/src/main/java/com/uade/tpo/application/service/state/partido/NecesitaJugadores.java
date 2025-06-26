@@ -2,27 +2,48 @@ package com.uade.tpo.application.service.state.partido;
 
 import com.uade.tpo.application.dto.EstadoDTO;
 import com.uade.tpo.application.entity.Partido;
+import com.uade.tpo.application.enums.EnumEstadoPartido;
+import com.uade.tpo.application.service.contexto.ContextoPartido;
+import com.uade.tpo.application.service.contexto.IContextoPartido;
 
 public class NecesitaJugadores implements EstadoPartido {
 
     @Override
-    public EstadoPartido avanzar(Partido p) {
-        int totalJugadores = 0;
-        if (p.getEquipos() != null) {
-            totalJugadores = p.getEquipos().stream()
-                    .mapToInt(e -> e.getJugadores().size())
-                    .sum();
-        }
+    public void jugadorSeAgrega(ContextoPartido contextoPartido) {
+        Partido partido = contextoPartido.getPartido();
 
-        if (totalJugadores >= p.getCantidadJugadoresPorEquipo()) {
-            return new Confirmado();
+        int totalJugadores = contextoPartido.getObservadores().size();
+        int cantidadTotal = partido.getCantidadEquipos() * partido.getCantidadJugadoresPorEquipo();
+
+        if (totalJugadores >= cantidadTotal) {
+            contextoPartido.setEstado(new Confirmado());
+            partido.setEstado(EnumEstadoPartido.CONFIRMADO);
+            contextoPartido.notificar();
         }
-        return this;
     }
 
     @Override
-    public EstadoPartido cancelar(Partido p) {
-        return new Cancelado();
+    public void confirmar(ContextoPartido contextoPartido) {
+        throw new IllegalStateException("No se puede confirmar Partido hasta que se armen todos los equipos.");
+    }
+
+    @Override
+    public void iniciar(ContextoPartido contextoPartido) {
+        Partido partido = contextoPartido.getPartido();
+        throw new IllegalStateException("No se puede iniciar Partido hasta que llegue la fecha: " + partido.getHorario());
+    }
+
+    @Override
+    public void cancelar(ContextoPartido contextoPartido) {
+        Partido partido = contextoPartido.getPartido();
+
+        contextoPartido.setEstado(new Cancelado());
+        partido.setEstado(EnumEstadoPartido.CANCELADO);
+        contextoPartido.notificar();
+    }
+
+    public void finalizar(ContextoPartido contextoPartido) {
+        throw new IllegalStateException("No se puede finalizar Partido.");
     }
 
     @Override

@@ -2,19 +2,33 @@ package com.uade.tpo.application.service.state.partido;
 
 import com.uade.tpo.application.dto.EstadoDTO;
 import com.uade.tpo.application.entity.Partido;
+import com.uade.tpo.application.service.contexto.ContextoPartido;
 
 public class Finalizado implements EstadoPartido {
 
     @Override
-    public EstadoPartido avanzar(Partido p) {
-        // Ya está finalizado, no avanza más
-        return this;
+    public void jugadorSeAgrega(ContextoPartido contextoPartido) {
+        throw new IllegalStateException("No se puede agregar jugador, el partido ya finalizó.");
     }
 
     @Override
-    public EstadoPartido cancelar(Partido p) {
-        // No puede cancelarse tras finalizar
-        return this;
+    public void confirmar(ContextoPartido contextoPartido) {
+        throw new IllegalStateException("No se puede confirmar, el partido ya finalizó.");
+    }
+
+    @Override
+    public void iniciar(ContextoPartido contextoPartido) {
+        throw new IllegalStateException("No se puede iniciar, el partido ya finalizó.");
+    }
+
+    @Override
+    public void cancelar(ContextoPartido contextoPartido) {
+        throw new IllegalStateException("No se puede cancelar, el partido ya finalizó.");
+    }
+
+    @Override
+    public void finalizar(ContextoPartido contextoPartido) {
+        throw new IllegalStateException("No se puede finalizar, el partido ya finalizó.");
     }
 
     @Override

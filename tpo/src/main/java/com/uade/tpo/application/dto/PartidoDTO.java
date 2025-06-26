@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -18,7 +19,7 @@ public class PartidoDTO {
     private Long idCreador;
     private Long idDeporte;
     private Double duracion;
-    private Date horario;
+    private LocalDateTime horario;
     private String ubicacion;
     private Integer cantidadEquipos;
     private Integer cantidadJugadoresPorEquipo;

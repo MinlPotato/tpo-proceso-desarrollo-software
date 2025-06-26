@@ -1,7 +1,10 @@
 package com.uade.tpo.application.service.state.partido;
 
 import com.uade.tpo.application.dto.EstadoDTO;
+import com.uade.tpo.application.entity.Jugador;
 import com.uade.tpo.application.entity.Partido;
+import com.uade.tpo.application.service.contexto.ContextoPartido;
+import com.uade.tpo.application.service.contexto.IContextoPartido;
 
 /**
  * Interfaz común para los distintos estados de un Partido.
@@ -11,25 +14,28 @@ import com.uade.tpo.application.entity.Partido;
 public interface EstadoPartido {
 
     /**
-     * Transición al siguiente estado según la lógica de este estado.
-     * @param p el partido en contexto
-     * @return la nueva instancia de EstadoPartido
+     * Jugador se agrega a un equipo.
+     * @param contextoPartido el partido en contexto
      */
-    EstadoPartido avanzar(Partido p);
+    void jugadorSeAgrega(ContextoPartido contextoPartido);
 
     /**
-     * Transición a estado cancelado o el apropiado según la lógica de este estado.
-     * @param p el partido en contexto
-     * @return la nueva instancia de EstadoPartido
+     * Cuando el partido esta para comenzar, se llama a este metodo.
+     * @param contextoPartido el partido en contexto
      */
-    EstadoPartido cancelar(Partido p);
+    void confirmar(ContextoPartido contextoPartido);
 
     /**
-     * Representación DTO de este estado (nombre, descripción y mensaje)
-     * para enviar al cliente o notificar.
-     * @return un EstadoDTO describiendo este estado
+     * Dar inicio al partido solo si la fecha es la indicada y es posible iniciar.
+     * @param contextoPartido
      */
-    EstadoDTO toDTO();
+    void iniciar(ContextoPartido contextoPartido);
+
+    /**
+     * Cancelacion del partido.
+     * @param contextoPartido el partido en contexto
+     */
+    void cancelar(ContextoPartido contextoPartido);
 
     /**
      * Transición directa a finalización.
@@ -38,9 +44,14 @@ public interface EstadoPartido {
      * @param p el partido en contexto
      * @return la instancia de EstadoPartido resultante
      */
-    default EstadoPartido finalizar(Partido p) {
-        return new Finalizado();
-    }
+    void finalizar(ContextoPartido contextoPartido);
+
+    /**
+     * Representación DTO de este estado (nombre, descripción y mensaje)
+     * para enviar al cliente o notificar.
+     * @return un EstadoDTO describiendo este estado
+     */
+    EstadoDTO toDTO();
 
     /**
      * Nombre legible de este estado.

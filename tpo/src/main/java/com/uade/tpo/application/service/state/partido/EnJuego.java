@@ -2,17 +2,38 @@ package com.uade.tpo.application.service.state.partido;
 
 import com.uade.tpo.application.dto.EstadoDTO;
 import com.uade.tpo.application.entity.Partido;
+import com.uade.tpo.application.enums.EnumEstadoPartido;
+import com.uade.tpo.application.service.contexto.ContextoPartido;
 
 public class EnJuego implements EstadoPartido {
 
     @Override
-    public EstadoPartido avanzar(Partido p) {
-        return new Finalizado();
+    public void jugadorSeAgrega(ContextoPartido contextoPartido) {
+        throw new IllegalStateException("No se puede agregar jugador, el partido ya comenzó.");
     }
 
     @Override
-    public EstadoPartido cancelar(Partido p) {
-        return new Cancelado();
+    public void confirmar(ContextoPartido contextoPartido) {
+        throw new IllegalStateException("No se puede confirmar, el partido ya comenzó.");
+    }
+
+    @Override
+    public void iniciar(ContextoPartido contextoPartido) {
+        throw new IllegalStateException("No se puede iniciar, el partido ya comenzó.");
+    }
+
+    @Override
+    public void cancelar(ContextoPartido contextoPartido) {
+        throw new IllegalStateException("No se puede cancelar, el partido ya comenzó.");
+    }
+
+    @Override
+    public void finalizar(ContextoPartido contextoPartido) {
+        Partido partido = contextoPartido.getPartido();
+
+        contextoPartido.setEstado(new Finalizado());
+        partido.setEstado(EnumEstadoPartido.FINALIZADO);
+        contextoPartido.notificar();
     }
 
     @Override

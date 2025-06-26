@@ -13,5 +13,4 @@ import java.util.List;
 public class EquipoCreateDTO {
     private String nombre;
     private Long idPartido;
-    private List<Long> jugadores;
 }

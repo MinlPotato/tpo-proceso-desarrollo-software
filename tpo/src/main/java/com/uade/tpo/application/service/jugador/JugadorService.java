@@ -83,7 +83,8 @@ public class JugadorService implements IJugadorService {
                 jugador.getNombre(),
                 jugador.getEmail(),
                 jugador.getUbicacion(),
-                nivelDTOS
+                nivelDTOS,
+                jugador.getFormaNotificar()
         );
     }
 }

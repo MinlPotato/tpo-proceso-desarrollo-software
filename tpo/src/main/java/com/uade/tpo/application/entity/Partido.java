@@ -1,11 +1,13 @@
 package com.uade.tpo.application.entity;
 
+import com.uade.tpo.application.enums.EnumEstadoPartido;
 import com.uade.tpo.application.enums.NivelDeporte;
 import com.uade.tpo.application.service.state.partido.EstadoPartido;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -31,14 +33,14 @@ public class Partido {
     private Double duracion; // En horas
 
     @Column(nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date horario;
+    private LocalDateTime horario;
 
     @Column(nullable = false)
     private String ubicacion;
 
-    @Transient
-    private EstadoPartido estado;
+    @Column(name = "estado_partido", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private EnumEstadoPartido estado;
 
     @Column(name = "cantidad_equipos", nullable = false)
     private Integer cantidadEquipos;
@@ -53,10 +55,6 @@ public class Partido {
             inverseJoinColumns = @JoinColumn(name = "equipo_id")
     )
     private List<Equipo> equipos;
-
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "resultado_id", referencedColumnName = "resultado_final_id")
-    private ResultadoFinal resultado;
 
     @Column(name = "nivelesJugadores", nullable = false)
     private List<NivelDeporte> nivelesJugadores;

@@ -3,6 +3,8 @@ package com.uade.tpo.application.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Setter
@@ -17,6 +19,7 @@ public class Equipo {
         this.nombre = nombre;
         this.partido = partido;
         this.jugadores = jugadores;
+        this.puntaje = 0;
     }
 
     @Id
@@ -38,23 +41,8 @@ public class Equipo {
         joinColumns = @JoinColumn(name = "equipo_id"),
         inverseJoinColumns = @JoinColumn(name = "jugador_id")
     )
-    private List<Jugador> jugadores;
+    private List<Jugador> jugadores = new ArrayList<>();;
 
-    public boolean unirse(Jugador jugador) {
-        if (jugadores == null) {
-            jugadores = new java.util.ArrayList<>();
-        }
-        if (!jugadores.contains(jugador)) {
-            jugadores.add(jugador);
-            return true;
-        }
-        return false;
-    }
-    public boolean abandonar(Jugador jugador) {
-        if (jugadores != null && jugadores.contains(jugador)) {
-            jugadores.remove(jugador);
-            return true;
-        }
-        return false;
-    }
+    @Column(name = "equipo_puntaje")
+    private Integer puntaje;
 }

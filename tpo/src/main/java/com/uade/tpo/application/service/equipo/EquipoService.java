@@ -42,35 +42,28 @@ public class EquipoService implements IEquipoService {
     public EquipoDTO createEquipo(EquipoCreateDTO dto) {
         try {
             if (dto == null) {
-            throw new IllegalArgumentException("El DTO de creación de equipo no puede ser nulo");
-        }
-        if (dto.getNombre() == null || dto.getIdPartido() == null) {
-            throw new IllegalArgumentException("El nombre del equipo y el ID del partido no pueden ser nulos");
-        }
-        if (dto.getJugadores() == null || dto.getJugadores().isEmpty()) {
-            throw new IllegalArgumentException("La lista de jugadores no puede estar vacía");
-        }
+                throw new IllegalArgumentException("El DTO de creación de equipo no puede ser nulo");
+            }
+            if (dto.getNombre() == null || dto.getIdPartido() == null) {
+                throw new IllegalArgumentException("El nombre del equipo y el ID del partido no pueden ser nulos");
+            }
 
-        Partido partido = partidoRepository.findById(dto.getIdPartido())
-        .orElseThrow(() -> new RuntimeException("Partido no encontrado con ID: " + dto.getIdPartido()));
+            Partido partido = partidoRepository.findById(dto.getIdPartido())
+                .orElseThrow(() -> new RuntimeException("Partido no encontrado con ID: " + dto.getIdPartido()));
 
-        // Obtener los jugadores por ID
-        List<Jugador> jugadores = jugadorRepository.findAllById(dto.getJugadores());
+            // Crear y poblar la entidad Equipo
+            Equipo equipo = new Equipo();
+            equipo.setNombre(dto.getNombre());
+            equipo.setPartido(partido);
 
-        // Crear y poblar la entidad Equipo
-        Equipo equipo = new Equipo();
-        equipo.setNombre(dto.getNombre());
-        equipo.setPartido(partido);
-        equipo.setJugadores(jugadores);
-
-        equipoRepository.save(equipo);
-        return convertToDTO(equipo);
+            equipoRepository.save(equipo);
+            return convertToDTO(equipo);
 
         } catch (Exception e) {
             // TODO: handle exception
             throw new UnsupportedOperationException("Error al crear el equipo: " + e.getMessage(), e);
         }
-        
+
     }
 
     @Override
@@ -105,19 +98,23 @@ public class EquipoService implements IEquipoService {
         }
         equipoRepository.deleteById(id);
     }
+
     public boolean unirseEquipo(Long idEquipo, Long idJugador) {
         Equipo equipo = equipoRepository.findById(idEquipo)
             .orElseThrow(() -> new RuntimeException("Equipo no encontrado con ID: " + idEquipo));
         Jugador jugador = jugadorRepository.findById(idJugador)
             .orElseThrow(() -> new RuntimeException("Jugador no encontrado con ID: " + idJugador));
 
-        if (equipo.unirse(jugador)) {
-            equipoRepository.save(equipo);
-            return true;
-        } else {
+        List<Jugador> jugadores = equipo.getJugadores();
 
-            return false;
+        if (!jugadores.contains(jugador)) {
+            jugadores.add(jugador);
+            equipoRepository.save(equipo);
+        } else {
+            throw new IllegalArgumentException("El jugador ya se encuentra en el equipo.");
         }
+
+        return true;
     }
 
     public boolean abandonarEquipo(Long idEquipo, Long idJugador) {
@@ -126,12 +123,16 @@ public class EquipoService implements IEquipoService {
         Jugador jugador = jugadorRepository.findById(idJugador)
             .orElseThrow(() -> new RuntimeException("Jugador no encontrado con ID: " + idJugador));
 
-        if (equipo.abandonar(jugador)) {
+        List<Jugador> jugadores = equipo.getJugadores();
+
+        if (jugadores.contains(jugador)) {
+            jugadores.remove(jugador);
             equipoRepository.save(equipo);
-            return true;
         } else {
-            return false;
+            throw new IllegalArgumentException("El jugador no se encuentra en el equipo.");
         }
+
+        return true;
     }
 
     private EquipoDTO convertToDTO(Equipo equipo) {

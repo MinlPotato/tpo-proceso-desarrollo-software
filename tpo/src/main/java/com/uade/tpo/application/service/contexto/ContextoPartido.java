@@ -1,8 +1,15 @@
 package com.uade.tpo.application.service.contexto;
 import com.uade.tpo.application.dto.EstadoDTO;
+import com.uade.tpo.application.dto.NotificacionDTO;
+import com.uade.tpo.application.entity.Equipo;
+import com.uade.tpo.application.entity.Jugador;
 import com.uade.tpo.application.entity.Partido;
 import com.uade.tpo.application.service.factory.FactoryEstadoPartido;
+import com.uade.tpo.application.service.notificador.INotificadorService;
+import com.uade.tpo.application.service.notificador.NotificadorService;
 import com.uade.tpo.application.service.state.partido.EstadoPartido;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,72 +23,73 @@ import java.util.List;
  * Contexto que mantiene el Partido y su Estado actual,
  * maneja la lista de observadores y delega avanzar/cancelar/finalizar.
  */
+@Getter
+@Setter
 @Component
-public class ContextoPartido {
+public class ContextoPartido  {
 
-    private final FactoryEstadoPartido factory;
-    // TODO: sustituir IObservador por tu interfaz / clase concreta
-    private final List<IObservador> observadores = new ArrayList<>();
-
+    private FactoryEstadoPartido factory;
+    private List<Jugador> observadores;
     private EstadoPartido estado;
     private Partido partido;
+    private INotificadorService notificadorService;
 
     @Autowired
-    public ContextoPartido(FactoryEstadoPartido factory) {
+    public ContextoPartido(FactoryEstadoPartido factory, INotificadorService notificador) {
         this.factory = factory;
+        this.notificadorService = notificador;
     }
 
     /** Inicializa partido y estado según un enum existente (por ej. PARTIDO_ARMADO). */
-    public void iniciarContexto(Partido p, EnumEstadoPartido e) {
-        this.partido = p;
-        this.estado = factory.crearEstadoPartido(e);
+    public void iniciarContexto(Partido partido, EnumEstadoPartido estado) {
+        this.partido = partido;
+        this.estado = factory.crearEstadoPartido(estado);
+        this.observadores = partido.getEquipos()
+            .stream()
+            .flatMap(equipo -> equipo.getJugadores().stream())
+            .toList();
     }
 
-    /** Agrega un observador para notificarle cambios de estado */
-    public void suscribirObservador(IObservador o) {
-        observadores.add(o);
-    }
-
-    /** Elimina un observador de la lista */
-    public void desuscribirObservador(IObservador o) {
-        observadores.remove(o);
-    }
 
     /** Avanza al siguiente estado, notifica a todos e informa éxito */
-    public boolean avanzarEstado() {
-        this.estado = this.estado.avanzar(partido);
-        notificar(estado.toDTO());
+    public boolean jugadorSeAgrega() {
+        this.estado.jugadorSeAgrega(this);
+        return true;
+    }
+
+    public boolean confirmar() {
+        this.estado.confirmar(this);
+        return true;
+    }
+
+    public boolean iniciar() {
+        this.estado.iniciar(this);
         return true;
     }
 
     /** Cancela el partido (o invoca la lógica de cancelación en el estado actual) */
-    public boolean cancelarEstado() {
-        this.estado = this.estado.cancelar(partido);
-        notificar(estado.toDTO());
+    public boolean cancelar() {
+        this.estado.cancelar(this);
         return true;
     }
 
     /** Finaliza el partido desde el estado actual */
-    public boolean finalizarEstado() {
-        this.estado = this.estado.finalizar(partido);
-        notificar(estado.toDTO());
+    public boolean finalizar() {
+        this.estado.finalizar(this);
         return true;
     }
 
-    /** Devuelve el objeto Partido en contexto */
-    public Partido getPartido() {
-        return partido;
-    }
-
-    /** Fija manualmente un nuevo estado (útil para restoración o pruebas) */
-    public void setEstado(EstadoPartido estado) {
-        this.estado = estado;
-    }
-
     /** Notifica a los observers, pasándoles el DTO de estado */
-    private void notificar(EstadoDTO dto) {
-        for (IObservador o : observadores) {
-            o.notificar(dto);
+    public void notificar() {
+        for (Jugador jugador : observadores) {
+
+            NotificacionDTO notificacion = new NotificacionDTO(
+                estado.getNombre() + ": " + estado.getMensaje(),
+                estado.getDescripcion(),
+                jugador.getEmail()
+            );
+
+            notificadorService.enviarNotificaion(jugador.getFormaNotificar(), notificacion);
         }
     }
 }
