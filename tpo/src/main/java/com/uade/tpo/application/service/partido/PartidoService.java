@@ -227,13 +227,9 @@ public class PartidoService implements IPartidoService {
         for (Partido partido : partidosParaFinalizar) {
             long duracion = partido.getDuracion().longValue();
             LocalDateTime horarioDeFinalizacion = partido.getHorario()
-                .plusHours(duracion)
-                .atZone(ZoneId.systemDefault())
-                .withZoneSameInstant(ZoneOffset.UTC)
-                .toLocalDateTime();
+                .plusHours(duracion);
 
-
-            if (LocalDateTime.now(Clock.systemUTC()).isAfter(horarioDeFinalizacion)) {
+            if (LocalDateTime.now().isAfter(horarioDeFinalizacion)) {
                 contextoPartido.iniciarContexto(partido);
                 contextoPartido.finalizar();
                 partidoRepository.save(contextoPartido.getPartido());
