@@ -18,8 +18,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class EquipoService implements IEquipoService {
-    @Autowired
-    private IPartidoService partidoService;
+
     @Autowired
     private EquipoRepository equipoRepository;
 
@@ -36,20 +35,18 @@ public class EquipoService implements IEquipoService {
 
     @Override
     @Transactional
-    public Equipo createEquipo(EquipoCreateDTO dto) {
+    public Equipo createEquipo(Partido partido, EquipoCreateDTO equipoCreateDTO) {
         try {
-            if (dto == null) {
+            if (equipoCreateDTO == null) {
                 throw new IllegalArgumentException("El DTO de creación de equipo no puede ser nulo");
             }
-            if (dto.getNombre() == null || dto.getIdPartido() == null) {
+            if (equipoCreateDTO.getNombre() == null) {
                 throw new IllegalArgumentException("El nombre del equipo y el ID del partido no pueden ser nulos");
             }
 
-            Partido partido = partidoService.getPartidoById(dto.getIdPartido());
-
             // Crear y poblar la entidad Equipo
             Equipo equipo = new Equipo();
-            equipo.setNombre(dto.getNombre());
+            equipo.setNombre(equipoCreateDTO.getNombre());
             equipo.setPartido(partido);
 
             equipoRepository.save(equipo);

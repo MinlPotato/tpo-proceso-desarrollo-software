@@ -6,13 +6,14 @@ import com.uade.tpo.application.dto.EquipoDTO;
 import com.uade.tpo.application.dto.EquipoCreateDTO;
 import com.uade.tpo.application.entity.Equipo;
 import com.uade.tpo.application.entity.Jugador;
+import com.uade.tpo.application.entity.Partido;
 
 public interface IEquipoService {
     List<Equipo> getEquipos();
 
     Equipo getEquipoById(Long id);
 
-    Equipo createEquipo(EquipoCreateDTO requestBody);
+    Equipo createEquipo(Partido partido, EquipoCreateDTO requestBody);
 
     Equipo updateEquipo(Long id, EquipoDTO requestBody);
 

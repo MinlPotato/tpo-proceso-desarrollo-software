@@ -12,5 +12,4 @@ import java.util.List;
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
 public class EquipoCreateDTO {
     private String nombre;
-    private Long idPartido;
 }

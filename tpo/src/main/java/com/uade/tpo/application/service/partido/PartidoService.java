@@ -76,9 +76,9 @@ public class PartidoService implements IPartidoService {
 
         for (int i = 0; i < dto.getCantidadEquipos(); i++) {
             Equipo equipo = equipoService.createEquipo(
+                partido,
                 new EquipoCreateDTO(
-                    "Equipo " + (i+1),
-                    partido.getId()
+                    "Equipo " + (i+1)
                 )
             );
             saved.getEquipos().add(equipo);
