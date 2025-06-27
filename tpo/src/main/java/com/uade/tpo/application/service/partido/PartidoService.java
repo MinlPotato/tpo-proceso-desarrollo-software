@@ -25,6 +25,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.time.Clock;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.List;
 
 @Slf4j
@@ -209,6 +213,30 @@ public class PartidoService implements IPartidoService {
                 iniciarPartido(partido);
             } catch (IllegalStateException e) {
                 log.info(e.getMessage(), partido.getId(), partido.getHorario());
+            }
+        }
+    }
+
+    @Scheduled(cron = "0 * * * * *") // Cron corre cada 60 segundos
+    @Transactional
+    protected void revisarPartidosParaFinalizar() {
+        List<Partido> partidosParaFinalizar = partidoRepository.findByEstado(
+            EnumEstadoPartido.EN_JUEGO
+        );
+
+        for (Partido partido : partidosParaFinalizar) {
+            long duracion = partido.getDuracion().longValue();
+            LocalDateTime horarioDeFinalizacion = partido.getHorario()
+                .plusHours(duracion)
+                .atZone(ZoneId.systemDefault())
+                .withZoneSameInstant(ZoneOffset.UTC)
+                .toLocalDateTime();
+
+
+            if (LocalDateTime.now(Clock.systemUTC()).isAfter(horarioDeFinalizacion)) {
+                contextoPartido.iniciarContexto(partido);
+                contextoPartido.finalizar();
+                partidoRepository.save(contextoPartido.getPartido());
             }
         }
     }

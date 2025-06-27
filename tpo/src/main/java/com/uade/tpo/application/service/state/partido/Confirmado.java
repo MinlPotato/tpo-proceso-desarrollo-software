@@ -5,7 +5,10 @@ import com.uade.tpo.application.entity.Partido;
 import com.uade.tpo.application.enums.EnumEstadoPartido;
 import com.uade.tpo.application.service.partido.ContextoPartido;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 
 public class Confirmado implements EstadoPartido {
 
@@ -27,8 +30,12 @@ public class Confirmado implements EstadoPartido {
     @Override
     public void iniciar(ContextoPartido contextoPartido) {
         Partido partido = contextoPartido.getPartido();
+        LocalDateTime horarioDeInicio = partido.getHorario()
+            .atZone(ZoneId.systemDefault())
+            .withZoneSameInstant(ZoneOffset.UTC)
+            .toLocalDateTime();
 
-        if (partido.getHorario().isBefore(LocalDateTime.now())) {
+        if (LocalDateTime.now(Clock.systemUTC()).isAfter(horarioDeInicio)) {
             contextoPartido.setEstado(new EnJuego());
             partido.setEstado(EnumEstadoPartido.EN_JUEGO);
             contextoPartido.notificar();
