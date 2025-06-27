@@ -40,22 +40,13 @@ public class NivelService implements INivelService {
     }
 
     @Override
-    public Nivel createNivel(Long jugadorId, NivelCreateDTO requestBody) {
+    public Nivel createNivel(Jugador jugador, NivelCreateDTO requestBody) {
 
         if (requestBody == null) {
             throw new IllegalArgumentException("NivelCreateDTO cannot be null");
         }
 
-        if (jugadorId == null || requestBody.getIdDeporte() == null || requestBody.getNivel() == null) {
-            throw new IllegalArgumentException("Jugador ID, Deporte ID, and Nivel cannot be null");
-        }
-
-        if (jugadorId <= 0 || requestBody.getIdDeporte() <= 0) {
-            throw new IllegalArgumentException("Jugador ID and Deporte ID must be positive numbers");
-        }
-
         Deporte deporte = deporteService.getDeporteById(requestBody.getIdDeporte());
-        Jugador jugador = jugadorService.getJugadorById(jugadorId);
         User user = userService.getCurrentUser();
         jugadorService.validarUsuario(jugador, user);
 
@@ -86,10 +77,9 @@ public class NivelService implements INivelService {
     }
 
     @Override
-    public void deleteNivel(Long jugadorId, Long nivelId) {
+    public void deleteNivel(Jugador jugador, Long nivelId) {
 
         Nivel nivel = nivelRepository.findById(nivelId).orElseThrow(() -> new RuntimeException("Nivel not found with id " + nivelId));
-        Jugador jugador = jugadorService.getJugadorById(jugadorId);
         User user = userService.getCurrentUser();
         jugadorService.validarUsuario(jugador, user);
 
@@ -101,7 +91,7 @@ public class NivelService implements INivelService {
     }
 
     @Override
-    public List<Jugador> buscarJugadoresQueTienenComoFavorito(Deporte deporte) {
+    public List<Jugador> buscarJugadoresComoFavorito(Deporte deporte) {
         return nivelRepository.findJugadoresByDeporteFavorito(deporte);
     }
 }

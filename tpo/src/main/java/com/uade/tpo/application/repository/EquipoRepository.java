@@ -9,7 +9,4 @@ import com.uade.tpo.application.entity.Equipo;
 
 @Repository
 public interface EquipoRepository extends JpaRepository<Equipo, Long> {
-    static List<Equipo> findByJugador(Long jugadorId){
-         throw new UnsupportedOperationException("Unimplemented method 'findByUbicacion'");
-    }
 }

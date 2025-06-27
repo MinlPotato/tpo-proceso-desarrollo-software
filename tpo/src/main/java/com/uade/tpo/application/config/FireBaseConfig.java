@@ -9,14 +9,14 @@ import jakarta.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStream;
 
-@Configuration
+//@Configuration
 public class FireBaseConfig {
 
-    @PostConstruct
+    //@PostConstruct
     public void init() {
         try {
             InputStream serviceAccount = getClass().getClassLoader()
-                .getResourceAsStream("firebase-service-account.json");
+                .getResourceAsStream("firebase-service-account2.json");
 
             FirebaseOptions options = FirebaseOptions.builder()
                 .setCredentials(GoogleCredentials.fromStream(serviceAccount))

@@ -20,7 +20,7 @@ public class DeporteController {
     private IDeporteService deporteService;
 
     @GetMapping
-    public ResponseEntity<List<DeporteDTO>> getAllDeportes() {
+    public ResponseEntity<List<DeporteDTO>> getDeportes() {
         return ResponseEntity.ok(deporteService.getDeportes()
             .stream()
             .map(this::toDTO)

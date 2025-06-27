@@ -27,7 +27,7 @@ public class PartidoController {
 
 
     @GetMapping
-    public ResponseEntity<List<PartidoDTO>> getAll() {
+    public ResponseEntity<List<PartidoDTO>> getPartidos() {
         return ResponseEntity.ok(partidoService.getPartidos()
             .stream()
             .map(this::toDTO)
@@ -36,13 +36,13 @@ public class PartidoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PartidoDTO> getById(@PathVariable Long id) {
+    public ResponseEntity<PartidoDTO> getPartidoById(@PathVariable Long id) {
         Partido partido = partidoService.getPartidoById(id);
         return ResponseEntity.ok(toDTO(partido));
     }
 
     @PostMapping
-    public ResponseEntity<PartidoDTO> create(@RequestBody PartidoCreateDTO dto) {
+    public ResponseEntity<PartidoDTO> crearPartido(@RequestBody PartidoCreateDTO dto) {
         Partido created = partidoService.createPartido(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(toDTO(created));
     }
@@ -54,7 +54,7 @@ public class PartidoController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> eliminarPartido(@PathVariable Long id) {
         partidoService.deletePartido(id);
         return ResponseEntity.noContent().build();
     }
@@ -84,9 +84,9 @@ public class PartidoController {
     }
 
     @PostMapping("/{id}/cancelar")
-    public ResponseEntity<Void> cancelar(@PathVariable Long id) {
-        partidoService.cancelarPartido(id);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<PartidoDTO> cancelarPartido(@PathVariable Long id) {
+        Partido partido = partidoService.cancelarPartido(id);
+        return ResponseEntity.ok(toDTO(partido));
     }
 
     @GetMapping("/filtrar")

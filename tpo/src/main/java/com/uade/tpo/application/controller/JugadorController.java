@@ -21,7 +21,6 @@ public class JugadorController {
 
     @Autowired
     private IJugadorService jugadorService;
-
     @Autowired
     private INivelService nivelService;
 
@@ -48,13 +47,15 @@ public class JugadorController {
 
     @PutMapping("/{jugadorId}/deportes")
     public ResponseEntity<NivelDTO> agregarDeporte(@PathVariable Long jugadorId, @RequestBody NivelCreateDTO requestBody) {
-        Nivel nivel = nivelService.createNivel(jugadorId, requestBody);
+        Jugador jugador = jugadorService.getJugadorById(jugadorId);
+        Nivel nivel = nivelService.createNivel(jugador, requestBody);
         return ResponseEntity.ok(toDTO(nivel));
     }
 
     @DeleteMapping("/{jugadorId}/deportes/{nivelId}")
     public void eliminarDeporte(@PathVariable Long jugadorId, @PathVariable Long nivelId) {
-        nivelService.deleteNivel(jugadorId, nivelId);
+        Jugador jugador = jugadorService.getJugadorById(jugadorId);
+        nivelService.deleteNivel(jugador, nivelId);
     }
 
     @PutMapping("/{id}")

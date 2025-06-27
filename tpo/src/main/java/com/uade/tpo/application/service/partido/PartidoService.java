@@ -83,7 +83,7 @@ public class PartidoService implements IPartidoService {
             saved.getEquipos().add(equipo);
         }
 
-        List<Jugador> jugadoresInteresados = nivelService.buscarJugadoresQueTienenComoFavorito(deporte);
+        List<Jugador> jugadoresInteresados = nivelService.buscarJugadoresComoFavorito(deporte);
 
         jugadoresInteresados.forEach(jugador -> {
             NotificacionDTO notificacionDTO = new NotificacionDTO(
