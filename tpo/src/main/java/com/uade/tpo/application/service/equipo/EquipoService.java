@@ -7,8 +7,9 @@ import com.uade.tpo.application.entity.Jugador;
 import com.uade.tpo.application.entity.Partido;
 import com.uade.tpo.application.repository.EquipoRepository;
 import com.uade.tpo.application.repository.JugadorRepository;
-import com.uade.tpo.application.repository.PartidoRepository;
 
+import com.uade.tpo.application.service.partido.IPartidoService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,28 +19,24 @@ import java.util.stream.Collectors;
 @Service
 public class EquipoService implements IEquipoService {
     @Autowired
-    private PartidoRepository partidoRepository;
-    @Autowired
-    private JugadorRepository jugadorRepository;
+    private IPartidoService partidoService;
     @Autowired
     private EquipoRepository equipoRepository;
 
     @Override
-    public List<EquipoDTO> getEquipos() {
-        return equipoRepository.findAll().stream()
-            .map(this::convertToDTO)
-            .collect(Collectors.toList());
+    public List<Equipo> getEquipos() {
+        return equipoRepository.findAll();
     }
 
     @Override
-    public EquipoDTO getEquipoById(Long id) {
-        Equipo equipo = equipoRepository.findById(id)
+    public Equipo getEquipoById(Long id) {
+        return equipoRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Equipo no encontrado con ID: " + id));
-        return convertToDTO(equipo);
     }
 
     @Override
-    public EquipoDTO createEquipo(EquipoCreateDTO dto) {
+    @Transactional
+    public Equipo createEquipo(EquipoCreateDTO dto) {
         try {
             if (dto == null) {
                 throw new IllegalArgumentException("El DTO de creación de equipo no puede ser nulo");
@@ -48,8 +45,7 @@ public class EquipoService implements IEquipoService {
                 throw new IllegalArgumentException("El nombre del equipo y el ID del partido no pueden ser nulos");
             }
 
-            Partido partido = partidoRepository.findById(dto.getIdPartido())
-                .orElseThrow(() -> new RuntimeException("Partido no encontrado con ID: " + dto.getIdPartido()));
+            Partido partido = partidoService.getPartidoById(dto.getIdPartido());
 
             // Crear y poblar la entidad Equipo
             Equipo equipo = new Equipo();
@@ -57,7 +53,7 @@ public class EquipoService implements IEquipoService {
             equipo.setPartido(partido);
 
             equipoRepository.save(equipo);
-            return convertToDTO(equipo);
+            return equipo;
 
         } catch (Exception e) {
             // TODO: handle exception
@@ -67,27 +63,14 @@ public class EquipoService implements IEquipoService {
     }
 
     @Override
-    public EquipoDTO updateEquipo(Long id, EquipoDTO requestBody) {
+    public Equipo updateEquipo(Long id, EquipoDTO requestBody) {
         // Buscar el equipo existente
         Equipo equipo = equipoRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Equipo no encontrado con ID: " + id));
-
         // Actualizar el nombre
         equipo.setNombre(requestBody.getNombre());
-
-        // Validar y actualizar el partido
-        Long idPartido = requestBody.getIdPartido();
-        Partido partido = partidoRepository.findById(idPartido)
-            .orElseThrow(() -> new RuntimeException("Partido no encontrado con ID: " + idPartido));
-        equipo.setPartido(partido);
-
-        // Actualizar los jugadores
-        List<Long> jugadoresIds = requestBody.getJugadores();
-        equipo.setJugadores(jugadorRepository.findAllById(jugadoresIds));
-
         // Guardar y devolver el DTO actualizado
-        Equipo equipoActualizado = equipoRepository.save(equipo);
-        return convertToDTO(equipoActualizado);
+        return equipoRepository.save(equipo);
     }
 
 
@@ -99,12 +82,7 @@ public class EquipoService implements IEquipoService {
         equipoRepository.deleteById(id);
     }
 
-    public boolean unirseEquipo(Long idEquipo, Long idJugador) {
-        Equipo equipo = equipoRepository.findById(idEquipo)
-            .orElseThrow(() -> new RuntimeException("Equipo no encontrado con ID: " + idEquipo));
-        Jugador jugador = jugadorRepository.findById(idJugador)
-            .orElseThrow(() -> new RuntimeException("Jugador no encontrado con ID: " + idJugador));
-
+    public void unirseEquipo(Equipo equipo, Jugador jugador) {
         List<Jugador> jugadores = equipo.getJugadores();
 
         if (!jugadores.contains(jugador)) {
@@ -114,15 +92,10 @@ public class EquipoService implements IEquipoService {
             throw new IllegalArgumentException("El jugador ya se encuentra en el equipo.");
         }
 
-        return true;
     }
 
-    public boolean abandonarEquipo(Long idEquipo, Long idJugador) {
-        Equipo equipo = equipoRepository.findById(idEquipo)
-            .orElseThrow(() -> new RuntimeException("Equipo no encontrado con ID: " + idEquipo));
-        Jugador jugador = jugadorRepository.findById(idJugador)
-            .orElseThrow(() -> new RuntimeException("Jugador no encontrado con ID: " + idJugador));
-
+    @Override
+    public boolean abandonarEquipo(Equipo equipo, Jugador jugador) {
         List<Jugador> jugadores = equipo.getJugadores();
 
         if (jugadores.contains(jugador)) {

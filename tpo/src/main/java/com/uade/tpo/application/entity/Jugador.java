@@ -42,11 +42,11 @@ public class Jugador {
     @OneToMany(mappedBy = "jugador", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Nivel> niveles = new ArrayList<>();
 
-    @ManyToMany
-    @JoinTable(name = "jugador_deporte",
-            joinColumns = @JoinColumn(name = "jugador_id"),
-            inverseJoinColumns = @JoinColumn(name = "deporte_id"))
-    private List<Deporte> deportes;
+//    @ManyToMany
+//    @JoinTable(name = "jugador_deporte",
+//            joinColumns = @JoinColumn(name = "jugador_id"),
+//            inverseJoinColumns = @JoinColumn(name = "deporte_id"))
+//    private List<Deporte> deportes;
 
     @Column(name = "forma_notificar", nullable = false)
     private FormaNotificar formaNotificar;

@@ -22,30 +22,26 @@ public class JugadorService implements IJugadorService {
 
 
     @Override
-    public List<JugadorDTO> getJugadores() {
-        return jugadorRepository.findAll()
-                .stream()
-                .map(this::toDTO)
-                .toList();
+    public List<Jugador> getJugadores() {
+        return jugadorRepository.findAll();
     }
 
     @Override
-    public JugadorDTO getJugadorById(Long id) {
-        Jugador jugador = jugadorRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Jugador not found with id " + id));
-        return toDTO(jugador);
+    public Jugador getJugadorById(Long id) {
+        return jugadorRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Jugador not found with id " + id));
     }
 
     @Override
-    public JugadorDTO createJugador(JugadorCreateDTO requestBody) {
+    public Jugador createJugador(JugadorCreateDTO requestBody) {
 
         // Validar datos
 
         Jugador jugador = new Jugador(requestBody);
-        return toDTO(jugadorRepository.save(jugador));
+        return jugadorRepository.save(jugador);
     }
 
     @Override
-    public JugadorDTO updateJugador(Long id, JugadorCreateDTO requestBody) {
+    public Jugador updateJugador(Long id, JugadorCreateDTO requestBody) {
         Jugador jugador = jugadorRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Jugador not found with id " + id));
 
         jugador.setNombre(requestBody.getNombre());
@@ -53,7 +49,7 @@ public class JugadorService implements IJugadorService {
         jugador.setUbicacion(requestBody.getUbicacion());
         jugador.setFormaNotificar(requestBody.getFormaNotificar());
 
-        return toDTO(jugadorRepository.save(jugador));
+        return jugadorRepository.save(jugador);
     }
 
 
@@ -70,21 +66,5 @@ public class JugadorService implements IJugadorService {
         jugadorRepository.deleteById(id);
     }
 
-    private JugadorDTO toDTO(Jugador jugador) {
 
-
-        List<NivelDTO> nivelDTOS = jugador.getNiveles()
-                .stream()
-                .map(nivel -> new NivelDTO(nivel.getId(), nivel.getJugador().getId(), nivel.getDeporte().getId(), nivel.getNivel(), nivel.getFavorito()))
-                .toList();
-
-        return new JugadorDTO(
-                jugador.getId(),
-                jugador.getNombre(),
-                jugador.getEmail(),
-                jugador.getUbicacion(),
-                nivelDTOS,
-                jugador.getFormaNotificar()
-        );
-    }
 }

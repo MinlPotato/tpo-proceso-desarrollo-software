@@ -4,32 +4,39 @@ import com.uade.tpo.application.dto.AgregarJugadorDTO;
 import com.uade.tpo.application.dto.PartidoCreateDTO;
 import com.uade.tpo.application.dto.PartidoDTO;
 import com.uade.tpo.application.entity.Partido;
+import com.uade.tpo.application.enums.TipoFiltro;
 import com.uade.tpo.application.service.contexto.IObservador;
+import jakarta.mail.Part;
 
 import java.util.List;
 
 public interface IPartidoService {
-    List<PartidoDTO> getPartidos();
 
-    PartidoDTO getPartidoById(Long id);
+    //CRUD
+    List<Partido> getPartidos();
 
-    PartidoDTO createPartido(PartidoCreateDTO dto);
+    Partido getPartidoById(Long id);
 
-    PartidoDTO updatePartido(Long id, PartidoDTO dto);
+    Partido createPartido(PartidoCreateDTO dto);
+
+    Partido updatePartido(Long id, PartidoDTO dto);
 
     void deletePartido(Long id);
 
-    PartidoDTO agregarJugador(Long partidoId, AgregarJugadorDTO agregarJugadorDTO);
+    //State
+    Partido agregarJugador(Long partidoId, AgregarJugadorDTO agregarJugadorDTO);
 
     void desuscribirObservador(Long partidoId, AgregarJugadorDTO agregarJugadorDTO);
 
-    PartidoDTO confirmarPartido(Long id);
+    Partido confirmarPartido(Long id);
 
     void iniciarPartido(Partido partido);
 
-    PartidoDTO cancelarPartido(Long id);
+    Partido finalizarPartido(Long partidoId);
+
+    Partido cancelarPartido(Long id);
 
     //filtros de partidos para emparejar jugadores
-    List<PartidoDTO> filtrar(Long jugadorId, String tipofiltro);
+    List<Partido> filtrar(Long jugadorId, TipoFiltro tipofiltro);
 
 }

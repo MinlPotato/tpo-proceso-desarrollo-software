@@ -1,12 +1,10 @@
 package com.uade.tpo.application.service.contexto;
-import com.uade.tpo.application.dto.EstadoDTO;
 import com.uade.tpo.application.dto.NotificacionDTO;
 import com.uade.tpo.application.entity.Equipo;
 import com.uade.tpo.application.entity.Jugador;
 import com.uade.tpo.application.entity.Partido;
-import com.uade.tpo.application.service.factory.FactoryEstadoPartido;
+import com.uade.tpo.application.factory.FactoryEstadoPartido;
 import com.uade.tpo.application.service.notificador.INotificadorService;
-import com.uade.tpo.application.service.notificador.NotificadorService;
 import com.uade.tpo.application.service.state.partido.EstadoPartido;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,9 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 
-import com.uade.tpo.application.enums.EnumEstadoPartido;
-
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -40,18 +35,15 @@ public class ContextoPartido  {
         this.notificadorService = notificador;
     }
 
-    /** Inicializa partido y estado según un enum existente (por ej. PARTIDO_ARMADO). */
-    public void iniciarContexto(Partido partido, EnumEstadoPartido estado) {
+    public void iniciarContexto(Partido partido, List<Equipo> equipos) {
         this.partido = partido;
-        this.estado = factory.crearEstadoPartido(estado);
+        this.estado = factory.crearEstadoPartido(partido.getEstado());
         this.observadores = partido.getEquipos()
             .stream()
             .flatMap(equipo -> equipo.getJugadores().stream())
             .toList();
     }
 
-
-    /** Avanza al siguiente estado, notifica a todos e informa éxito */
     public boolean jugadorSeAgrega() {
         this.estado.jugadorSeAgrega(this);
         return true;
@@ -79,7 +71,7 @@ public class ContextoPartido  {
         return true;
     }
 
-    /** Notifica a los observers, pasándoles el DTO de estado */
+    /** Notifica a los observers, pasándoles el DTO */
     public void notificar() {
         for (Jugador jugador : observadores) {
 

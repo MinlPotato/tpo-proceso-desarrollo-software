@@ -51,7 +51,7 @@ public class Confirmado implements EstadoPartido {
 
     @Override
     public String getNombre() {
-        return "Confirmado";
+        return "Partido confirmado";
     }
 
     @Override
@@ -61,7 +61,7 @@ public class Confirmado implements EstadoPartido {
 
     @Override
     public String getMensaje() {
-        return "Preparado para iniciar el juego";
+        return "Preparado para iniciar el juego cuando llegue la fecha,";
     }
 
     @Override

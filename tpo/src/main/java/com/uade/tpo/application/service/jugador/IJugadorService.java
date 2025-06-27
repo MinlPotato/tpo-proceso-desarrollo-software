@@ -4,18 +4,19 @@ package com.uade.tpo.application.service.jugador;
 import com.uade.tpo.application.dto.JugadorCreateDTO;
 import com.uade.tpo.application.dto.JugadorDTO;
 import com.uade.tpo.application.dto.NivelCreateDTO;
+import com.uade.tpo.application.entity.Jugador;
 
 import java.util.List;
 
 public interface IJugadorService {
 
-    List<JugadorDTO> getJugadores();
+    List<Jugador> getJugadores();
 
-    JugadorDTO getJugadorById(Long id);
+    Jugador getJugadorById(Long id);
 
-    JugadorDTO createJugador(JugadorCreateDTO requestBody);
+    Jugador createJugador(JugadorCreateDTO requestBody);
 
-    JugadorDTO updateJugador(Long id, JugadorCreateDTO requestBody);
+    Jugador updateJugador(Long id, JugadorCreateDTO requestBody);
 
     //JugadorDTO agregarDeporte(NivelCreateDTO requestBody);
 

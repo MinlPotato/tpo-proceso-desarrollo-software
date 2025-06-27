@@ -16,8 +16,8 @@ public class NecesitaJugadores implements EstadoPartido {
         int cantidadTotal = partido.getCantidadEquipos() * partido.getCantidadJugadoresPorEquipo();
 
         if (totalJugadores >= cantidadTotal) {
-            contextoPartido.setEstado(new Confirmado());
-            partido.setEstado(EnumEstadoPartido.CONFIRMADO);
+            contextoPartido.setEstado(new PartidoArmado());
+            partido.setEstado(EnumEstadoPartido.PARTIDO_ARMADO);
             contextoPartido.notificar();
         }
     }

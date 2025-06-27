@@ -49,12 +49,12 @@ public class PartidoArmado implements EstadoPartido {
 
     @Override
     public String getDescripcion() {
-        return "El partido ha sido armado y espera inscripciones";
+        return "El partido ha sido armado!";
     }
 
     @Override
     public String getMensaje() {
-        return "Listo para recibir jugadores";
+        return "Todos los equipos están completos!";
     }
 
     @Override

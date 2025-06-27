@@ -1,5 +1,6 @@
 package com.uade.tpo.application.entity;
 
+import com.uade.tpo.application.dto.PartidoCreateDTO;
 import com.uade.tpo.application.enums.EnumEstadoPartido;
 import com.uade.tpo.application.enums.NivelDeporte;
 import com.uade.tpo.application.service.state.partido.EstadoPartido;
@@ -8,6 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -30,7 +32,7 @@ public class Partido {
     private Deporte deporte;
 
     @Column(nullable = false)
-    private Double duracion; // En horas
+    private Double duracion; // TODO: Cambiar tipo de valor a LocalDateTime
 
     @Column(nullable = false)
     private LocalDateTime horario;
@@ -56,11 +58,30 @@ public class Partido {
     )
     private List<Equipo> equipos;
 
-    @Column(name = "nivelesJugadores", nullable = false)
+    @ElementCollection(targetClass = NivelDeporte.class)
+    @CollectionTable(
+        name = "partido_niveles",
+        joinColumns = @JoinColumn(name = "partido_id")
+    )
+    @Column(name = "nivel")
+    @Enumerated(EnumType.STRING)
     private List<NivelDeporte> nivelesJugadores;
 
     public Partido() {
         // Constructor por defecto
+    }
+
+    public Partido(PartidoCreateDTO partidoCreateDTO, Jugador jugador, Deporte deporte) {
+        this.creador = jugador;
+        this.deporte = deporte;
+        this.duracion = partidoCreateDTO.getDuracion(); // TODO: Cambiar logica de agregar duracion
+        this.horario = partidoCreateDTO.getHorario(); // TODO: Cambiar logica de agregar horario
+        this.ubicacion = partidoCreateDTO.getUbicacion();
+        this.estado = EnumEstadoPartido.NECESITA_JUGADORES;
+        this.cantidadJugadoresPorEquipo = partidoCreateDTO.getCantidadJugadoresPorEquipo();
+        this.cantidadEquipos = partidoCreateDTO.getCantidadEquipos();
+        this.nivelesJugadores = partidoCreateDTO.getNivelesJugadores();
+        this.equipos = new ArrayList<>();
     }
 
 

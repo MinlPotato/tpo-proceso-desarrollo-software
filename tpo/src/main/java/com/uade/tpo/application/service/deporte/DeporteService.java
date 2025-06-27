@@ -17,24 +17,18 @@ public class DeporteService implements IDeporteService {
     @Autowired
     private DeporteRepository deporteRepository;
 
-    public List<DeporteDTO> getDeportes() {
-        return deporteRepository.findAll()
-                .stream()
-                .map(this::toDTO)
-                .toList();
+    public List<Deporte> getDeportes() {
+        return deporteRepository.findAll();
     }
 
-    public DeporteDTO getDeporteById(Long id) {
+    public Deporte getDeporteById(Long id) {
         if (id == null || id <= 0) {
             throw new IllegalArgumentException("ID must be a positive number");
         }
-
-        Deporte deporte = deporteRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Deporte not found with id " + id));
-        return toDTO(deporte);
-
+        return deporteRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Deporte not found with id " + id));
     }
 
-    public DeporteDTO createDeporte(DeporteCreateDTO requestBody) {
+    public Deporte createDeporte(DeporteCreateDTO requestBody) {
 
         if (requestBody == null || requestBody.getNombre() == null || requestBody.getNombre().isEmpty()) {
             throw new IllegalArgumentException("Deporte name cannot be null or empty");
@@ -46,10 +40,7 @@ public class DeporteService implements IDeporteService {
         deporte.setNombre(requestBody.getNombre());
         deporte.setDescripcion(requestBody.getDescripcion());
 
-        Deporte savedDeporte = deporteRepository.save(deporte);
-
-        return toDTO(savedDeporte);
-
+        return deporteRepository.save(deporte);
     }
 
     public void deleteDeporte(Long id) {
@@ -65,7 +56,7 @@ public class DeporteService implements IDeporteService {
         deporteRepository.deleteById(id);
     }
 
-    public DeporteDTO updateDeporte(Long id, DeporteCreateDTO requestBody) {
+    public Deporte updateDeporte(Long id, DeporteCreateDTO requestBody) {
 
         if (id == null || id <= 0) {
             throw new IllegalArgumentException("ID must be a positive number");
@@ -79,12 +70,9 @@ public class DeporteService implements IDeporteService {
         deporte.setNombre(requestBody.getNombre());
         deporte.setDescripcion(requestBody.getDescripcion());
 
-        return toDTO(deporteRepository.save(deporte));
-
+        return deporteRepository.save(deporte);
     }
 
-    private DeporteDTO toDTO(Deporte deporte) {
-        return new DeporteDTO(deporte.getId(), deporte.getNombre(), deporte.getDescripcion());
-    }
+
 
 }

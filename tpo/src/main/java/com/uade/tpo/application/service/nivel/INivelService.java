@@ -3,14 +3,19 @@ import com.uade.tpo.application.dto.NivelCreateDTO;
 import com.uade.tpo.application.dto.NivelDTO;
 import com.uade.tpo.application.entity.Deporte;
 import com.uade.tpo.application.entity.Jugador;
+import com.uade.tpo.application.entity.Nivel;
+
+import java.util.List;
 
 
 public interface INivelService {
-    public NivelDTO getNivelById(Long id);
+    public Nivel getNivelById(Long id);
 
-    public NivelDTO createNivel(Long jugadorId, NivelCreateDTO nivelCreateDTO);
+    public Nivel createNivel(Long jugadorId, NivelCreateDTO nivelCreateDTO);
 
-    public NivelDTO updateNivel(Jugador jugador, Deporte deporte, NivelCreateDTO requestBody);
+    public Nivel updateNivel(Jugador jugador, Deporte deporte, NivelCreateDTO requestBody);
 
     public void deleteNivel(Long jugadorId, Long nivelId);
+
+    public List<Jugador> buscarJugadoresQueTienenComoFavorito(Deporte deporte);
 }

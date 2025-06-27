@@ -2,6 +2,7 @@ package com.uade.tpo.application.controller;
 
 import com.uade.tpo.application.dto.DeporteCreateDTO;
 import com.uade.tpo.application.dto.DeporteDTO;
+import com.uade.tpo.application.entity.Deporte;
 import com.uade.tpo.application.service.deporte.IDeporteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,27 +21,37 @@ public class DeporteController {
 
     @GetMapping
     public ResponseEntity<List<DeporteDTO>> getAllDeportes() {
-        return ResponseEntity.ok(deporteService.getDeportes());
+        return ResponseEntity.ok(deporteService.getDeportes()
+            .stream()
+            .map(this::toDTO)
+            .toList()
+        );
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<DeporteDTO> getDeporteById(@PathVariable Long id) {
-        return ResponseEntity.ok(deporteService.getDeporteById(id));
+        Deporte deporte = deporteService.getDeporteById(id);
+        return ResponseEntity.ok(toDTO(deporte));
     }
 
     @PostMapping
     public ResponseEntity<DeporteDTO> createDeporte(@RequestBody DeporteCreateDTO deporte) {
-        DeporteDTO creado = deporteService.createDeporte(deporte);
-        return ResponseEntity.status(HttpStatus.CREATED).body(creado);
+        Deporte creado = deporteService.createDeporte(deporte);
+        return ResponseEntity.status(HttpStatus.CREATED).body(toDTO(creado));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<DeporteDTO> updateDeporte(@PathVariable Long id, @RequestBody DeporteCreateDTO deporte) {
-        return ResponseEntity.ok(deporteService.updateDeporte(id, deporte));
+    public ResponseEntity<DeporteDTO> updateDeporte(@PathVariable Long id, @RequestBody DeporteCreateDTO deporteCreateDTO) {
+        Deporte deporte = deporteService.updateDeporte(id, deporteCreateDTO);
+        return ResponseEntity.ok(toDTO(deporte));
     }
 
     @DeleteMapping("/{id}")
     public void deleteDeporte(@PathVariable Long id) {
         deporteService.deleteDeporte(id);
+    }
+
+    private DeporteDTO toDTO(Deporte deporte) {
+        return new DeporteDTO(deporte.getId(), deporte.getNombre(), deporte.getDescripcion());
     }
 }

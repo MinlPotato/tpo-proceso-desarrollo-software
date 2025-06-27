@@ -8,4 +8,6 @@ import com.uade.tpo.application.entity.Jugador;
 
 @Repository
 public interface JugadorRepository extends JpaRepository<Jugador, Long> {
+
+
 }

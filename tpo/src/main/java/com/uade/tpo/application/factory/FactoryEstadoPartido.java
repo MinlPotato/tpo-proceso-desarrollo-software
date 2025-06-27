@@ -1,4 +1,4 @@
-package com.uade.tpo.application.service.factory;
+package com.uade.tpo.application.factory;
 
 
 import com.uade.tpo.application.enums.EnumEstadoPartido;

@@ -4,6 +4,8 @@ import com.uade.tpo.application.dto.JugadorCreateDTO;
 import com.uade.tpo.application.dto.JugadorDTO;
 import com.uade.tpo.application.dto.NivelCreateDTO;
 import com.uade.tpo.application.dto.NivelDTO;
+import com.uade.tpo.application.entity.Jugador;
+import com.uade.tpo.application.entity.Nivel;
 import com.uade.tpo.application.service.nivel.INivelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,22 +27,29 @@ public class JugadorController {
 
     @GetMapping
     public ResponseEntity<List<JugadorDTO>> getJugadores() {
-        return ResponseEntity.ok(jugadorService.getJugadores());
+        return ResponseEntity.ok(jugadorService.getJugadores()
+            .stream()
+            .map(this::toDTO)
+            .toList()
+        );
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<JugadorDTO> getJugador(@PathVariable Long id) {
-        return ResponseEntity.ok(jugadorService.getJugadorById(id));
+        Jugador jugador = jugadorService.getJugadorById(id);
+        return ResponseEntity.ok(toDTO(jugador));
     }
 
     @PostMapping
     public ResponseEntity<JugadorDTO> createJugador(@RequestBody JugadorCreateDTO requestBody) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(jugadorService.createJugador(requestBody));
+        Jugador jugador = jugadorService.createJugador(requestBody);
+        return ResponseEntity.status(HttpStatus.CREATED).body(toDTO(jugador));
     }
 
     @PutMapping("/{jugadorId}/deportes")
     public ResponseEntity<NivelDTO> agregarDeporte(@PathVariable Long jugadorId, @RequestBody NivelCreateDTO requestBody) {
-        return ResponseEntity.ok(nivelService.createNivel(jugadorId, requestBody));
+        Nivel nivel = nivelService.createNivel(jugadorId, requestBody);
+        return ResponseEntity.ok(toDTO(nivel));
     }
 
     @DeleteMapping("/{jugadorId}/deportes/{nivelId}")
@@ -50,11 +59,38 @@ public class JugadorController {
 
     @PutMapping("/{id}")
     public ResponseEntity<JugadorDTO> updateJugador(@PathVariable Long id, @RequestBody JugadorCreateDTO requestBody) {
-        return ResponseEntity.ok(jugadorService.updateJugador(id, requestBody));
+        Jugador jugador = jugadorService.updateJugador(id, requestBody);
+        return ResponseEntity.ok(toDTO(jugador));
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         jugadorService.eliminarJugador(id);
+    }
+
+    private NivelDTO toDTO(Nivel nivel) {
+        return new NivelDTO(
+            nivel.getId(),
+            nivel.getJugador().getId(),
+            nivel.getDeporte().getId(),
+            nivel.getNivel(), // o nivel.getNivel().toString()
+            nivel.getFavorito()
+        );
+    }
+
+    private JugadorDTO toDTO(Jugador jugador) {
+        List<NivelDTO> nivelDTOS = jugador.getNiveles()
+            .stream()
+            .map(nivel -> new NivelDTO(nivel.getId(), nivel.getJugador().getId(), nivel.getDeporte().getId(), nivel.getNivel(), nivel.getFavorito()))
+            .toList();
+
+        return new JugadorDTO(
+            jugador.getId(),
+            jugador.getNombre(),
+            jugador.getEmail(),
+            jugador.getUbicacion(),
+            nivelDTOS,
+            jugador.getFormaNotificar()
+        );
     }
 }

@@ -1,22 +1,20 @@
 package com.uade.tpo.application.service.partido;
 
 import com.uade.tpo.application.dto.*;
+import com.uade.tpo.application.entity.Deporte;
 import com.uade.tpo.application.entity.Equipo;
 import com.uade.tpo.application.entity.Jugador;
 import com.uade.tpo.application.entity.Partido;
 import com.uade.tpo.application.enums.EnumEstadoPartido;
-import com.uade.tpo.application.repository.DeporteRepository;
-import com.uade.tpo.application.repository.JugadorRepository;
+import com.uade.tpo.application.enums.TipoFiltro;
 import com.uade.tpo.application.repository.PartidoRepository;
 import com.uade.tpo.application.service.contexto.ContextoPartido;
-import com.uade.tpo.application.service.contexto.IContextoPartido;
-import com.uade.tpo.application.service.contexto.IObservador;
-import com.uade.tpo.application.service.equipo.EquipoService;
+import com.uade.tpo.application.service.deporte.IDeporteService;
 import com.uade.tpo.application.service.equipo.IEquipoService;
-import com.uade.tpo.application.service.factory.FactoryEstadoPartido;
 
+import com.uade.tpo.application.service.jugador.IJugadorService;
+import com.uade.tpo.application.service.nivel.INivelService;
 import com.uade.tpo.application.service.notificador.INotificadorService;
-import com.uade.tpo.application.service.state.partido.EstadoPartido;
 import com.uade.tpo.application.service.strategy.partido.FiltrarPorHistorial;
 import com.uade.tpo.application.service.strategy.partido.FiltrarPorNivel;
 import com.uade.tpo.application.service.strategy.partido.FiltrarPorUbicacion;
@@ -25,79 +23,90 @@ import com.uade.tpo.application.service.strategy.partido.StrategyFiltrarPartido;
 import jakarta.persistence.EntityNotFoundException;
 
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class PartidoService implements IPartidoService {
 
     @Autowired
     private PartidoRepository partidoRepository;
-    @Autowired
-    private JugadorRepository jugadorRepository;
-    @Autowired
-    private DeporteRepository deporteRepository;
 
     @Autowired
     private IEquipoService equipoService;
+    @Autowired
+    private INivelService nivelService;
+    @Autowired
+    private IDeporteService deporteService;
+    @Autowired
+    private IJugadorService jugadorService;
 
     @Autowired
     private ContextoPartido contextoPartido;
     @Autowired
-    private FactoryEstadoPartido factoryEstadoPartido;
-    @Autowired
     private INotificadorService notificadorService; // inyecta NotificadorService
 
     @Override
-    public List<PartidoDTO> getPartidos() {
-        return partidoRepository.findAll()
-            .stream()
-            .map(this::toDTO)
-            .collect(Collectors.toList());
+    public List<Partido> getPartidos() {
+        return partidoRepository.findAll();
     }
 
     @Override
-    public PartidoDTO getPartidoById(Long id) {
+    public Partido getPartidoById(Long id) {
+        return partidoRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("Partido no encontrado: " + id));
+    }
+
+    @Override
+    @Transactional
+    public Partido createPartido(PartidoCreateDTO dto) {
+
+        Jugador jugadorCreador = jugadorService.getJugadorById(dto.getIdCreador());
+
+        Deporte deporte = deporteService.getDeporteById(dto.getIdDeporte());
+
+        Partido partido = new Partido(dto, jugadorCreador, deporte);
+
+        Partido saved = partidoRepository.save(partido);
+
+        for (int i = 0; i < dto.getCantidadEquipos(); i++) {
+            Equipo equipo = equipoService.createEquipo(
+                new EquipoCreateDTO(
+                    "Equipo " + (i+1),
+                    partido.getId()
+                )
+            );
+            saved.getEquipos().add(equipo);
+        }
+
+        List<Jugador> jugadoresInteresados = nivelService.buscarJugadoresQueTienenComoFavorito(deporte);
+
+        jugadoresInteresados.forEach(jugador -> {
+            NotificacionDTO notificacionDTO = new NotificacionDTO(
+                "Partido para vos!",
+                "Se creó un partido de " + deporte.getNombre() + ".",
+                jugador.getEmail()
+            );
+            notificadorService.enviarNotificaion(jugador.getFormaNotificar(), notificacionDTO);
+        });
+
+        return partidoRepository.save(saved);
+    }
+
+    @Override
+    public Partido updatePartido(Long id, PartidoDTO dto) {
         Partido p = partidoRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException("Partido no encontrado: " + id));
-        return toDTO(p);
-    }
-
-    @Override
-    public PartidoDTO createPartido(PartidoCreateDTO dto) {
-        Partido p = new Partido();
         p.setDuracion(dto.getDuracion());
         p.setHorario(dto.getHorario());
         p.setUbicacion(dto.getUbicacion());
-        p.setCreador(jugadorRepository.findById(dto.getIdCreador())
-            .orElseThrow(() -> new EntityNotFoundException("Jugador no encontrado: " + dto.getIdCreador())));
-        p.setDeporte(deporteRepository.findById(dto.getIdDeporte())
-            .orElseThrow(() -> new EntityNotFoundException("Deporte no encontrado: " + dto.getIdDeporte())));
-        // Inicializo el estado
-        p.setEstado(EnumEstadoPartido.NECESITA_JUGADORES);
-        p.setCantidadJugadoresPorEquipo(dto.getCantidadJugadoresPorEquipo());
-        p.setCantidadEquipos(dto.getCantidadEquipos());
-        p.setNivelesJugadores(dto.getNivelesJugadores());
-        Partido saved = partidoRepository.save(p);
 
-        return toDTO(saved);
-
-    }
-
-    @Override
-    public PartidoDTO updatePartido(Long id, PartidoDTO dto) {
-        Partido p = partidoRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException("Partido no encontrado: " + id));
-        p.setDuracion(dto.getDuracion());
-        p.setHorario(dto.getHorario());
-        p.setUbicacion(dto.getUbicacion());
-        Partido updated = partidoRepository.save(p);
-        return toDTO(updated);
+        return partidoRepository.save(p);
     }
 
     @Override
@@ -110,20 +119,25 @@ public class PartidoService implements IPartidoService {
 
     @Override
     @Transactional
-    public PartidoDTO agregarJugador(Long partidoId, AgregarJugadorDTO agregarJugadorDTO) {
-        Partido partido = partidoRepository.findById(partidoId)
-            .orElseThrow(() -> new EntityNotFoundException("Partido no encontrado: " + partidoId));
-        Jugador jugador = jugadorRepository.findById(agregarJugadorDTO.getJugadorId())
-            .orElseThrow(() -> new EntityNotFoundException("Jugador no encontrado: " + agregarJugadorDTO.getJugadorId()));
+    public Partido agregarJugador(Long partidoId, AgregarJugadorDTO agregarJugadorDTO) {
+        Partido partido = this.getPartidoById(partidoId);
+        Jugador jugador = jugadorService.getJugadorById(agregarJugadorDTO.getJugadorId());
+        List<Equipo> equipos = partido.getEquipos();
 
-        Equipo equipo = partido.getEquipos().get(agregarJugadorDTO.getNumeroEquipo());
+        equipos.forEach(equipo -> {
+            if (equipo.getJugadores().contains(jugador)) {
+                throw new IllegalArgumentException("El jugador ya se encuentra en el equipo.");
+            }
+        });
 
-        equipoService.unirseEquipo(equipo.getId(), jugador.getId());
+        Equipo equipoAUnirse = equipos.get(agregarJugadorDTO.getNumeroEquipo());
 
-        contextoPartido.iniciarContexto(partido, partido.getEstado());
+        equipoService.unirseEquipo(equipoAUnirse, jugador);
+
+        contextoPartido.iniciarContexto(partido, partido.getEquipos());
         contextoPartido.jugadorSeAgrega();
 
-        return toDTO(partidoRepository.save(contextoPartido.getPartido()));
+        return partidoRepository.save(contextoPartido.getPartido());
     }
 
     @Override
@@ -132,116 +146,84 @@ public class PartidoService implements IPartidoService {
 
         Partido partido = partidoRepository.findById(partidoId)
             .orElseThrow(() -> new EntityNotFoundException("Partido no encontrado: " + partidoId));
-        contextoPartido.iniciarContexto(partido, partido.getEstado());
+        contextoPartido.iniciarContexto(partido, partido.getEquipos());
     }
 
     @Override
-    public PartidoDTO confirmarPartido(Long id) {
+    public Partido confirmarPartido(Long id) {
         Partido partido = partidoRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException("Partido no encontrado: " + id));
 
-        contextoPartido.iniciarContexto(partido, partido.getEstado());
+        contextoPartido.iniciarContexto(partido, partido.getEquipos());
         contextoPartido.confirmar();
 
-        return toDTO(partidoRepository.save(contextoPartido.getPartido()));
+        return partidoRepository.save(contextoPartido.getPartido());
     }
 
-    @Transactional
     @Scheduled(cron = "0 * * * * *") // Cron corre cada 60 segundos
-    private void revisarPartidosParaIniciar() {
-        List<Partido> partidosParaIniciar = partidoRepository.findByEstadoAndHorarioLessThanEqual(
-            EnumEstadoPartido.CONFIRMADO,
-            LocalDateTime.now()
+    @Transactional
+    protected void revisarPartidosParaIniciar() {
+        List<Partido> partidosParaIniciar = partidoRepository.findByEstado(
+            EnumEstadoPartido.CONFIRMADO
         );
 
         for (Partido partido : partidosParaIniciar) {
-            iniciarPartido(partido);
+            try {
+                iniciarPartido(partido);
+            } catch (IllegalStateException e) {
+                log.info(e.getMessage(), partido.getId(), partido.getHorario());
+            }
         }
     }
 
     @Override
+    @Transactional
     public void iniciarPartido(Partido partido) {
-        contextoPartido.iniciarContexto(partido, partido.getEstado());
+        contextoPartido.iniciarContexto(partido, partido.getEquipos());
         contextoPartido.iniciar();
         partidoRepository.save(contextoPartido.getPartido());
     }
 
     @Override
-    public PartidoDTO cancelarPartido(Long id) {
+    @Transactional
+    public Partido finalizarPartido(Long id) {
         Partido partido = partidoRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException("Partido no encontrado: " + id));
 
-        contextoPartido.iniciarContexto(partido, partido.getEstado());
-        contextoPartido.cancelar();
-        return toDTO(partidoRepository.save(contextoPartido.getPartido()));
+        contextoPartido.iniciarContexto(partido, partido.getEquipos());
+        contextoPartido.finalizar();
+        return partidoRepository.save(contextoPartido.getPartido());
     }
 
-    public List<PartidoDTO> filtrar(Long jugadorID, String tipoDeFiltro) {
-        Jugador jugador = jugadorRepository.findById(jugadorID)
-            .orElseThrow(() -> new EntityNotFoundException("Jugador no encontrado: " + jugadorID));
+    @Override
+    public Partido cancelarPartido(Long id) {
+        Partido partido = partidoRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("Partido no encontrado: " + id));
+
+        contextoPartido.iniciarContexto(partido, partido.getEquipos());
+        contextoPartido.cancelar();
+        return partidoRepository.save(contextoPartido.getPartido());
+    }
+
+    @Override
+    public List<Partido> filtrar(Long jugadorID, TipoFiltro tipoDeFiltro) {
+        Jugador jugador = jugadorService.getJugadorById(jugadorID);
 
         StrategyFiltrarPartido strategy;
-        return switch (tipoDeFiltro.toLowerCase()) {
-            case "historial" -> {
+        return switch (tipoDeFiltro) {
+            case HISTORIAL -> {
                 strategy = new FiltrarPorHistorial();
-                yield strategy.filtrar(jugador, partidoRepository).stream().map(this::toDTO).toList();
+                yield strategy.filtrar(jugador, partidoRepository);
             }
-            case "nivel" -> {
+            case NIVEL -> {
                 strategy = new FiltrarPorNivel();
-                yield strategy.filtrar(jugador, partidoRepository).stream().map(this::toDTO).toList();
+                yield strategy.filtrar(jugador, partidoRepository);
             }
-            case "ubicacion" -> {
+            case UBICACION -> {
                 strategy = new FiltrarPorUbicacion();
-                yield strategy.filtrar(jugador, partidoRepository).stream().map(this::toDTO).toList();
+                yield strategy.filtrar(jugador, partidoRepository);
             }
-            default -> throw new IllegalArgumentException("Tipo de filtro no soportado: " + tipoDeFiltro);
         };
     }
-
-    private PartidoDTO toDTO(Partido partido) {
-        // Mapear estado si está presente
-        EstadoDTO estadoDTO = null;
-        EstadoPartido estado = factoryEstadoPartido.crearEstadoPartido(partido.getEstado());
-        if (estado != null) {
-            estadoDTO = new EstadoDTO(
-                estado.getNombre(),
-                estado.getDescripcion(),
-                estado.getMensaje()
-            );
-        }
-
-        // Calcular cantidad de equipos
-        List<Equipo> equipos = partido.getEquipos();
-        int cantidadEquipos = (equipos != null) ? equipos.size() : 0;
-
-        // Calcular cantidad de jugadores por equipo (asumimos que todos tienen la misma cantidad)
-        int cantidadJugadoresPorEquipo = 0;
-        if (equipos != null && !equipos.isEmpty() && equipos.get(0).getJugadores() != null) {
-            cantidadJugadoresPorEquipo = equipos.get(0).getJugadores().size();
-        }
-
-        return new PartidoDTO(
-            partido.getId(),
-            (partido.getCreador() != null) ? partido.getCreador().getId() : null,
-            (partido.getDeporte() != null) ? partido.getDeporte().getId() : null,
-            partido.getDuracion(),
-            partido.getHorario(),
-            partido.getUbicacion(),
-            cantidadEquipos,
-            cantidadJugadoresPorEquipo,
-            estadoDTO,
-            equipos != null ? equipos.stream()
-                .map(equipo -> new EquipoDTO(
-                    equipo.getId(),
-                    equipo.getNombre(),
-                    equipo.getPartido() != null ? equipo.getPartido().getId() : null,
-                    equipo.getJugadores() != null ? equipo.getJugadores().stream()
-                        .map(Jugador::getId)
-                        .toList() : List.of()
-                )).toList() : List.of(),
-            partido.getNivelesJugadores()
-        );
-    }
-
 
 }

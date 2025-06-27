@@ -17,8 +17,6 @@ public interface PartidoRepository extends JpaRepository<Partido, Long> {
 
     List<Partido> findByDeporteId(Long deporteId);
 
-    List<Partido> findByEstadoAndHorarioLessThanEqual(EnumEstadoPartido estado, LocalDateTime horario);
-    
-    //List<Partido> findByEquipoId(Long equipoId);
+    List<Partido> findByEstado(EnumEstadoPartido estado);
 
 }

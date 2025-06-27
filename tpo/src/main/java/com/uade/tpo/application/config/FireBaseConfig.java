@@ -1,4 +1,4 @@
-package com.uade.tpo.application.controller.config;
+package com.uade.tpo.application.config;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
