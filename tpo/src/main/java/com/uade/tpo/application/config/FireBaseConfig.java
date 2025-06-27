@@ -16,7 +16,7 @@ public class FireBaseConfig {
     public void init() {
         try {
             InputStream serviceAccount = getClass().getClassLoader()
-                .getResourceAsStream("firebase-service-account2.json");
+                .getResourceAsStream("firebase-service-account.json");
 
             FirebaseOptions options = FirebaseOptions.builder()
                 .setCredentials(GoogleCredentials.fromStream(serviceAccount))
