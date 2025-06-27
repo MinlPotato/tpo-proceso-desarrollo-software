@@ -3,6 +3,9 @@ package com.uade.tpo.application.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.uade.tpo.application.dto.JugadorCreateDTO;
+import com.uade.tpo.application.dto.JugadorDTO;
+import com.uade.tpo.application.enums.FormaNotificar;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,12 +15,25 @@ import lombok.Setter;
 @Entity
 public class Jugador {
 
-    public Jugador() {}
+    public Jugador() {
+    }
+
+    public Jugador(JugadorCreateDTO jugadorCreateDTO, User user) {
+        this.nombre = jugadorCreateDTO.getNombre();
+        this.email = jugadorCreateDTO.getEmail();
+        this.ubicacion = jugadorCreateDTO.getUbicacion();
+        this.formaNotificar = jugadorCreateDTO.getFormaNotificar();
+        this.user = user;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "jugador_id", nullable = false)
     private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
+    private User user;
 
     @Column(name = "nombre", nullable = false)
     private String nombre;
@@ -31,15 +47,14 @@ public class Jugador {
     @OneToMany(mappedBy = "jugador", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Nivel> niveles = new ArrayList<>();
 
-@ManyToMany
-@JoinTable(name = "jugador_deporte",
-    joinColumns = @JoinColumn(name = "jugador_id"),
-    inverseJoinColumns = @JoinColumn(name = "deporte_id"))
-private List<Deporte> deportes;
+//    @ManyToMany
+//    @JoinTable(name = "jugador_deporte",
+//            joinColumns = @JoinColumn(name = "jugador_id"),
+//            inverseJoinColumns = @JoinColumn(name = "deporte_id"))
+//    private List<Deporte> deportes;
 
-    @ManyToOne
-    @JoinColumn(name = "equipo_id", nullable = false)
-    private Equipo equipo;
+    @Column(name = "forma_notificar", nullable = false)
+    private FormaNotificar formaNotificar;
 
-    // @OneToMany(mappedBy = "jugador")
+
 }
