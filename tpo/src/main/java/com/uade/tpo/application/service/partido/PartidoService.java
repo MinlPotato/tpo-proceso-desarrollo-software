@@ -137,8 +137,16 @@ public class PartidoService implements IPartidoService {
                 throw new IllegalArgumentException("El jugador ya se encuentra en el equipo.");
             }
         });
-
-        Equipo equipoAUnirse = equipos.get(agregarJugadorDTO.getNumeroEquipo());
+        if(partido.getDeporte().getId() != jugador.getNiveles().listIterator().next().getDeporte().getId()) {
+            throw new IllegalArgumentException("El deporte del jugador no coincide con el del partido.");
+        }
+        if (partido.getNivelesJugadores().stream()
+            .noneMatch(nivel -> nivel.equals(jugador.getNiveles().listIterator().next().getNivel()))) {
+            throw new IllegalArgumentException("El jugador no tiene un nivel compatible con el partido.");
+        }
+        Equipo equipoAUnirse = equipos.get(agregarJugadorDTO.getNumeroEquipo()).getJugadores().size() < partido.getCantidadJugadoresPorEquipo()
+            ? equipos.get(agregarJugadorDTO.getNumeroEquipo())
+            : null;
 
         equipoService.unirseEquipo(equipoAUnirse, jugador);
 
