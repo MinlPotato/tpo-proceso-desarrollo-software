@@ -4,9 +4,14 @@ import com.uade.tpo.application.dto.EstadoDTO;
 import com.uade.tpo.application.entity.Partido;
 import com.uade.tpo.application.enums.EnumEstadoPartido;
 import com.uade.tpo.application.service.partido.ContextoPartido;
+import lombok.extern.slf4j.Slf4j;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 
+@Slf4j
 public class Confirmado implements EstadoPartido {
 
     @Override
@@ -27,8 +32,12 @@ public class Confirmado implements EstadoPartido {
     @Override
     public void iniciar(ContextoPartido contextoPartido) {
         Partido partido = contextoPartido.getPartido();
+        LocalDateTime horarioDeInicio = partido.getHorario();
 
-        if (partido.getHorario().isBefore(LocalDateTime.now())) {
+        log.info(horarioDeInicio.toString());
+        log.info(LocalDateTime.now().toString());
+
+        if (LocalDateTime.now().isAfter(horarioDeInicio)) {
             contextoPartido.setEstado(new EnJuego());
             partido.setEstado(EnumEstadoPartido.EN_JUEGO);
             contextoPartido.notificar();
