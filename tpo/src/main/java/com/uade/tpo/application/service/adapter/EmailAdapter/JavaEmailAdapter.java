@@ -14,14 +14,10 @@ public class JavaEmailAdapter implements NotificacionEmailAdapter {
     @Autowired
     private JavaMailSender mailSender;
 
-    @Value("${env:GMAIL_NAME}")
-    private String emailFrom;
-
     @Override
     public void enviar(NotificacionDTO notificacion) {
 
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(emailFrom);
         message.setTo(notificacion.getEmail());
         message.setSubject(notificacion.getTitulo());
         message.setText(notificacion.getMensaje());

@@ -77,7 +77,7 @@ public class PartidoService implements IPartidoService {
             Equipo equipo = equipoService.createEquipo(
                 partido,
                 new EquipoCreateDTO(
-                    "Equipo " + (i+1)
+                    "Equipo " + (i + 1)
                 )
             );
             saved.getEquipos().add(equipo);
@@ -125,7 +125,7 @@ public class PartidoService implements IPartidoService {
         partidoRepository.deleteById(id);
     }
 
-       @Override
+    @Override
     @Transactional
     public Partido agregarJugador(Long partidoId, AgregarJugadorDTO agregarJugadorDTO) {
         Partido partido = this.getPartidoById(partidoId);
@@ -137,16 +137,26 @@ public class PartidoService implements IPartidoService {
                 throw new IllegalArgumentException("El jugador ya se encuentra en el equipo.");
             }
         });
-        if(partido.getDeporte().getId() != jugador.getNiveles().listIterator().next().getDeporte().getId()) {
+
+        boolean tieneNivelDelDeporte = jugador.getNiveles().stream()
+            .anyMatch(nivel -> nivel.getDeporte().equals(partido.getDeporte()));
+
+        boolean tieneNivelParaPartido = jugador.getNiveles().stream()
+            .anyMatch(nivel -> partido.getNivelesJugadores().contains(nivel.getNivel()));
+
+        if (!tieneNivelDelDeporte) {
             throw new IllegalArgumentException("El deporte del jugador no coincide con el del partido.");
         }
-        if (partido.getNivelesJugadores().stream()
-            .noneMatch(nivel -> nivel.equals(jugador.getNiveles().listIterator().next().getNivel()))) {
-            throw new IllegalArgumentException("El jugador no tiene un nivel compatible con el partido.");
+
+        if (!tieneNivelParaPartido) {
+            throw new IllegalArgumentException("El jugador tiene un nivel que no coincide con lo permitido en el partido.");
         }
-        Equipo equipoAUnirse = equipos.get(agregarJugadorDTO.getNumeroEquipo()).getJugadores().size() < partido.getCantidadJugadoresPorEquipo()
-            ? equipos.get(agregarJugadorDTO.getNumeroEquipo())
-            : null;
+
+        Equipo equipoAUnirse = equipos.get(agregarJugadorDTO.getNumeroEquipo());
+
+        if (equipoAUnirse.getJugadores().size() >= partido.getCantidadJugadoresPorEquipo()) {
+            throw new IllegalArgumentException("El equipo elegido esta al maximo de jugadores.");
+        }
 
         equipoService.unirseEquipo(equipoAUnirse, jugador);
 
@@ -155,7 +165,6 @@ public class PartidoService implements IPartidoService {
 
         return partidoRepository.save(contextoPartido.getPartido());
     }
-
 
 
     @Override
