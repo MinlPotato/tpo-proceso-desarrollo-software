@@ -3,13 +3,18 @@ package com.uade.tpo.application.service.state.partido;
 import com.uade.tpo.application.dto.EstadoDTO;
 import com.uade.tpo.application.entity.Partido;
 import com.uade.tpo.application.enums.EnumEstadoPartido;
-import com.uade.tpo.application.service.contexto.ContextoPartido;
+import com.uade.tpo.application.service.partido.ContextoPartido;
 
 public class EnJuego implements EstadoPartido {
 
     @Override
     public void jugadorSeAgrega(ContextoPartido contextoPartido) {
         throw new IllegalStateException("No se puede agregar jugador, el partido ya comenzó.");
+    }
+
+    @Override
+    public void jugadorSeElimina(ContextoPartido contextoPartido) {
+        throw new IllegalStateException("No se puede eliminar jugador de un equipo, el partido ya comenzó.");
     }
 
     @Override

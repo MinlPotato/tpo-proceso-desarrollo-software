@@ -1,7 +1,10 @@
 package com.uade.tpo.application.service.nivel;
 
+import com.uade.tpo.application.entity.User;
+import com.uade.tpo.application.exception.ResourceNotFoundException;
 import com.uade.tpo.application.service.deporte.IDeporteService;
 import com.uade.tpo.application.service.jugador.IJugadorService;
+import com.uade.tpo.application.service.security.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.uade.tpo.application.dto.NivelCreateDTO;
 import com.uade.tpo.application.entity.Nivel;
@@ -23,6 +26,8 @@ public class NivelService implements INivelService {
     private IDeporteService deporteService;
     @Autowired
     private IJugadorService jugadorService;
+    @Autowired
+    private UserService userService;
 
     @Override
     public Nivel getNivelById(Long id) {
@@ -36,6 +41,7 @@ public class NivelService implements INivelService {
 
     @Override
     public Nivel createNivel(Long jugadorId, NivelCreateDTO requestBody) {
+
         if (requestBody == null) {
             throw new IllegalArgumentException("NivelCreateDTO cannot be null");
         }
@@ -50,6 +56,8 @@ public class NivelService implements INivelService {
 
         Deporte deporte = deporteService.getDeporteById(requestBody.getIdDeporte());
         Jugador jugador = jugadorService.getJugadorById(jugadorId);
+        User user = userService.getCurrentUser();
+        jugadorService.validarUsuario(jugador, user);
 
         if (nivelRepository.existsByJugadorAndDeporte(jugador, deporte)) {
             return updateNivel(jugador, deporte, requestBody);
@@ -79,17 +87,15 @@ public class NivelService implements INivelService {
 
     @Override
     public void deleteNivel(Long jugadorId, Long nivelId) {
-        if (jugadorId == null || nivelId == null) {
-            throw new IllegalArgumentException("Jugador ID, Nivel ID cannot be null");
-        }
 
         Nivel nivel = nivelRepository.findById(nivelId).orElseThrow(() -> new RuntimeException("Nivel not found with id " + nivelId));
+        Jugador jugador = jugadorService.getJugadorById(jugadorId);
+        User user = userService.getCurrentUser();
+        jugadorService.validarUsuario(jugador, user);
 
-        if (!nivel.getJugador().getId().equals(jugadorId)) {
+        if (!nivel.getJugador().equals(jugador)) {
             throw new IllegalArgumentException("Nivel ID given is not from the Jugador");
         }
-
-        // Nivel nivel = nivelRepository.findById(id).orElseThrow(() -> new RuntimeException("Deporte not found with id " + id));
 
         nivelRepository.deleteById(nivelId);
     }

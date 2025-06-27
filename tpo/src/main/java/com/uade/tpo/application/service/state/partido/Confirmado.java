@@ -3,18 +3,20 @@ package com.uade.tpo.application.service.state.partido;
 import com.uade.tpo.application.dto.EstadoDTO;
 import com.uade.tpo.application.entity.Partido;
 import com.uade.tpo.application.enums.EnumEstadoPartido;
-import com.uade.tpo.application.service.contexto.ContextoPartido;
-import com.uade.tpo.application.service.contexto.IContextoPartido;
+import com.uade.tpo.application.service.partido.ContextoPartido;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 public class Confirmado implements EstadoPartido {
 
     @Override
     public void jugadorSeAgrega(ContextoPartido contextoPartido) {
         throw new IllegalStateException("No se puede agregar jugador, el partido ya fue confirmado.");
+    }
+
+    @Override
+    public void jugadorSeElimina(ContextoPartido contextoPartido) {
+        throw new IllegalStateException("No se puede eliminar jugador de un equipo, el partido ya fue confirmado.");
     }
 
     @Override

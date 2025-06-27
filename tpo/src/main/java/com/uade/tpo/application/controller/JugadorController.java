@@ -86,6 +86,7 @@ public class JugadorController {
 
         return new JugadorDTO(
             jugador.getId(),
+            jugador.getUser().getId(),
             jugador.getNombre(),
             jugador.getEmail(),
             jugador.getUbicacion(),

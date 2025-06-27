@@ -5,6 +5,7 @@ import com.uade.tpo.application.dto.JugadorCreateDTO;
 import com.uade.tpo.application.dto.JugadorDTO;
 import com.uade.tpo.application.dto.NivelCreateDTO;
 import com.uade.tpo.application.entity.Jugador;
+import com.uade.tpo.application.entity.User;
 
 import java.util.List;
 
@@ -22,4 +23,5 @@ public interface IJugadorService {
 
     void eliminarJugador(Long id);
 
+    void validarUsuario(Jugador jugador, User user);
 }

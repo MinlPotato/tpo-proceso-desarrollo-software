@@ -65,6 +65,12 @@ public class PartidoController {
         return ResponseEntity.ok(toDTO(partido));
     }
 
+    @PostMapping("/{id}/eliminar-jugador")
+    public ResponseEntity<PartidoDTO> eliminarJugador(@PathVariable Long id, @RequestBody AgregarJugadorDTO dto) {
+        Partido partido = partidoService.eliminarJugador(id, dto);
+        return ResponseEntity.ok(toDTO(partido));
+    }
+
     @PostMapping("/{id}/confirmar")
     public ResponseEntity<PartidoDTO> confirmarPartido(@PathVariable Long id) {
         Partido partido = partidoService.confirmarPartido(id);

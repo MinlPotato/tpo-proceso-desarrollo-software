@@ -4,13 +4,22 @@ package com.uade.tpo.application.service.state.partido;
 import com.uade.tpo.application.dto.EstadoDTO;
 import com.uade.tpo.application.entity.Partido;
 import com.uade.tpo.application.enums.EnumEstadoPartido;
-import com.uade.tpo.application.service.contexto.ContextoPartido;
+import com.uade.tpo.application.service.partido.ContextoPartido;
 
 public class PartidoArmado implements EstadoPartido {
 
     @Override
     public void jugadorSeAgrega(ContextoPartido contextoPartido) {
         throw new IllegalStateException("No se puede agregar jugador, todos los equipos del partido ya están llenos.");
+    }
+
+    @Override
+    public void jugadorSeElimina(ContextoPartido contextoPartido) {
+        Partido partido = contextoPartido.getPartido();
+
+        contextoPartido.setEstado(new NecesitaJugadores());
+        partido.setEstado(EnumEstadoPartido.NECESITA_JUGADORES);
+        contextoPartido.notificar();
     }
 
     @Override

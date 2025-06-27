@@ -18,17 +18,22 @@ public class Jugador {
     public Jugador() {
     }
 
-    public Jugador(JugadorCreateDTO jugadorCreateDTO) {
+    public Jugador(JugadorCreateDTO jugadorCreateDTO, User user) {
         this.nombre = jugadorCreateDTO.getNombre();
         this.email = jugadorCreateDTO.getEmail();
         this.ubicacion = jugadorCreateDTO.getUbicacion();
         this.formaNotificar = jugadorCreateDTO.getFormaNotificar();
+        this.user = user;
     }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "jugador_id", nullable = false)
     private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @Column(name = "nombre", nullable = false)
     private String nombre;
@@ -50,5 +55,6 @@ public class Jugador {
 
     @Column(name = "forma_notificar", nullable = false)
     private FormaNotificar formaNotificar;
+
 
 }

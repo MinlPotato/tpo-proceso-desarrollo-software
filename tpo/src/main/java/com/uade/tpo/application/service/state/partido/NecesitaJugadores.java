@@ -3,8 +3,7 @@ package com.uade.tpo.application.service.state.partido;
 import com.uade.tpo.application.dto.EstadoDTO;
 import com.uade.tpo.application.entity.Partido;
 import com.uade.tpo.application.enums.EnumEstadoPartido;
-import com.uade.tpo.application.service.contexto.ContextoPartido;
-import com.uade.tpo.application.service.contexto.IContextoPartido;
+import com.uade.tpo.application.service.partido.ContextoPartido;
 
 public class NecesitaJugadores implements EstadoPartido {
 
@@ -20,6 +19,11 @@ public class NecesitaJugadores implements EstadoPartido {
             partido.setEstado(EnumEstadoPartido.PARTIDO_ARMADO);
             contextoPartido.notificar();
         }
+    }
+
+    @Override
+    public void jugadorSeElimina(ContextoPartido contextoPartido) {
+        return;
     }
 
     @Override

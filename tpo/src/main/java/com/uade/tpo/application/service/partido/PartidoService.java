@@ -1,20 +1,17 @@
 package com.uade.tpo.application.service.partido;
 
 import com.uade.tpo.application.dto.*;
-import com.uade.tpo.application.entity.Deporte;
-import com.uade.tpo.application.entity.Equipo;
-import com.uade.tpo.application.entity.Jugador;
-import com.uade.tpo.application.entity.Partido;
+import com.uade.tpo.application.entity.*;
 import com.uade.tpo.application.enums.EnumEstadoPartido;
 import com.uade.tpo.application.enums.TipoFiltro;
 import com.uade.tpo.application.repository.PartidoRepository;
-import com.uade.tpo.application.service.contexto.ContextoPartido;
 import com.uade.tpo.application.service.deporte.IDeporteService;
 import com.uade.tpo.application.service.equipo.IEquipoService;
 
 import com.uade.tpo.application.service.jugador.IJugadorService;
 import com.uade.tpo.application.service.nivel.INivelService;
 import com.uade.tpo.application.service.notificador.INotificadorService;
+import com.uade.tpo.application.service.security.UserService;
 import com.uade.tpo.application.service.strategy.partido.FiltrarPorHistorial;
 import com.uade.tpo.application.service.strategy.partido.FiltrarPorNivel;
 import com.uade.tpo.application.service.strategy.partido.FiltrarPorUbicacion;
@@ -45,6 +42,8 @@ public class PartidoService implements IPartidoService {
     private IDeporteService deporteService;
     @Autowired
     private IJugadorService jugadorService;
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private ContextoPartido contextoPartido;
@@ -67,11 +66,11 @@ public class PartidoService implements IPartidoService {
     public Partido createPartido(PartidoCreateDTO dto) {
 
         Jugador jugadorCreador = jugadorService.getJugadorById(dto.getIdCreador());
+        User user = userService.getCurrentUser();
+        jugadorService.validarUsuario(jugadorCreador, user);
 
         Deporte deporte = deporteService.getDeporteById(dto.getIdDeporte());
-
         Partido partido = new Partido(dto, jugadorCreador, deporte);
-
         Partido saved = partidoRepository.save(partido);
 
         for (int i = 0; i < dto.getCantidadEquipos(); i++) {
@@ -100,20 +99,29 @@ public class PartidoService implements IPartidoService {
 
     @Override
     public Partido updatePartido(Long id, PartidoDTO dto) {
-        Partido p = partidoRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException("Partido no encontrado: " + id));
-        p.setDuracion(dto.getDuracion());
-        p.setHorario(dto.getHorario());
-        p.setUbicacion(dto.getUbicacion());
 
-        return partidoRepository.save(p);
+        Partido partido = partidoRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("Partido no encontrado: " + id));
+
+        Jugador jugador = jugadorService.getJugadorById(partido.getCreador().getId());
+        User user = userService.getCurrentUser();
+        jugadorService.validarUsuario(jugador, user);
+
+        partido.setDuracion(dto.getDuracion());
+        partido.setHorario(dto.getHorario());
+        partido.setUbicacion(dto.getUbicacion());
+
+        return partidoRepository.save(partido);
     }
 
     @Override
     public void deletePartido(Long id) {
-        if (!partidoRepository.existsById(id)) {
-            throw new EntityNotFoundException("Partido no encontrado: " + id);
-        }
+
+        Partido partido = getPartidoById(id);
+        Jugador jugador = jugadorService.getJugadorById(partido.getCreador().getId());
+        User user = userService.getCurrentUser();
+        jugadorService.validarUsuario(jugador, user);
+
         partidoRepository.deleteById(id);
     }
 
@@ -134,19 +142,25 @@ public class PartidoService implements IPartidoService {
 
         equipoService.unirseEquipo(equipoAUnirse, jugador);
 
-        contextoPartido.iniciarContexto(partido, partido.getEquipos());
+        contextoPartido.iniciarContexto(partido);
         contextoPartido.jugadorSeAgrega();
 
         return partidoRepository.save(contextoPartido.getPartido());
     }
 
     @Override
-    public void desuscribirObservador(Long partidoId, AgregarJugadorDTO agregarJugadorDTO) {
-        // TODO: Hacer logica de desuscripcion
+    public Partido eliminarJugador(Long partidoId, AgregarJugadorDTO agregarJugadorDTO) {
+        Partido partido = this.getPartidoById(partidoId);
+        Jugador jugador = jugadorService.getJugadorById(agregarJugadorDTO.getJugadorId());
 
-        Partido partido = partidoRepository.findById(partidoId)
-            .orElseThrow(() -> new EntityNotFoundException("Partido no encontrado: " + partidoId));
-        contextoPartido.iniciarContexto(partido, partido.getEquipos());
+        Equipo equipo = partido.getEquipos().get(agregarJugadorDTO.getNumeroEquipo());
+
+        equipoService.abandonarEquipo(equipo, jugador);
+
+        contextoPartido.iniciarContexto(partido);
+        contextoPartido.jugadorSeElimina();
+
+        return partidoRepository.save(contextoPartido.getPartido());
     }
 
     @Override
@@ -154,7 +168,11 @@ public class PartidoService implements IPartidoService {
         Partido partido = partidoRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException("Partido no encontrado: " + id));
 
-        contextoPartido.iniciarContexto(partido, partido.getEquipos());
+        Jugador jugador = jugadorService.getJugadorById(partido.getCreador().getId());
+        User user = userService.getCurrentUser();
+        jugadorService.validarUsuario(jugador, user);
+
+        contextoPartido.iniciarContexto(partido);
         contextoPartido.confirmar();
 
         return partidoRepository.save(contextoPartido.getPartido());
@@ -179,7 +197,7 @@ public class PartidoService implements IPartidoService {
     @Override
     @Transactional
     public void iniciarPartido(Partido partido) {
-        contextoPartido.iniciarContexto(partido, partido.getEquipos());
+        contextoPartido.iniciarContexto(partido);
         contextoPartido.iniciar();
         partidoRepository.save(contextoPartido.getPartido());
     }
@@ -190,7 +208,11 @@ public class PartidoService implements IPartidoService {
         Partido partido = partidoRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException("Partido no encontrado: " + id));
 
-        contextoPartido.iniciarContexto(partido, partido.getEquipos());
+        Jugador jugador = jugadorService.getJugadorById(partido.getCreador().getId());
+        User user = userService.getCurrentUser();
+        jugadorService.validarUsuario(jugador, user);
+
+        contextoPartido.iniciarContexto(partido);
         contextoPartido.finalizar();
         return partidoRepository.save(contextoPartido.getPartido());
     }
@@ -200,7 +222,11 @@ public class PartidoService implements IPartidoService {
         Partido partido = partidoRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException("Partido no encontrado: " + id));
 
-        contextoPartido.iniciarContexto(partido, partido.getEquipos());
+        Jugador jugador = jugadorService.getJugadorById(partido.getCreador().getId());
+        User user = userService.getCurrentUser();
+        jugadorService.validarUsuario(jugador, user);
+
+        contextoPartido.iniciarContexto(partido);
         contextoPartido.cancelar();
         return partidoRepository.save(contextoPartido.getPartido());
     }

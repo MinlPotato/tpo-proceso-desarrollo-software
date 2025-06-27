@@ -5,8 +5,6 @@ import com.uade.tpo.application.dto.PartidoCreateDTO;
 import com.uade.tpo.application.dto.PartidoDTO;
 import com.uade.tpo.application.entity.Partido;
 import com.uade.tpo.application.enums.TipoFiltro;
-import com.uade.tpo.application.service.contexto.IObservador;
-import jakarta.mail.Part;
 
 import java.util.List;
 
@@ -26,7 +24,7 @@ public interface IPartidoService {
     //State
     Partido agregarJugador(Long partidoId, AgregarJugadorDTO agregarJugadorDTO);
 
-    void desuscribirObservador(Long partidoId, AgregarJugadorDTO agregarJugadorDTO);
+    Partido eliminarJugador(Long partidoId, AgregarJugadorDTO agregarJugadorDTO);
 
     Partido confirmarPartido(Long id);
 

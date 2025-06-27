@@ -1,4 +1,4 @@
-package com.uade.tpo.application.service.contexto;
+package com.uade.tpo.application.service.partido;
 import com.uade.tpo.application.dto.NotificacionDTO;
 import com.uade.tpo.application.entity.Equipo;
 import com.uade.tpo.application.entity.Jugador;
@@ -21,7 +21,7 @@ import java.util.List;
 @Getter
 @Setter
 @Component
-public class ContextoPartido  {
+public class ContextoPartido {
 
     private FactoryEstadoPartido factory;
     private List<Jugador> observadores;
@@ -35,7 +35,7 @@ public class ContextoPartido  {
         this.notificadorService = notificador;
     }
 
-    public void iniciarContexto(Partido partido, List<Equipo> equipos) {
+    public void iniciarContexto(Partido partido) {
         this.partido = partido;
         this.estado = factory.crearEstadoPartido(partido.getEstado());
         this.observadores = partido.getEquipos()
@@ -44,31 +44,30 @@ public class ContextoPartido  {
             .toList();
     }
 
-    public boolean jugadorSeAgrega() {
+    public void jugadorSeAgrega() {
         this.estado.jugadorSeAgrega(this);
-        return true;
     }
 
-    public boolean confirmar() {
+    public void jugadorSeElimina() {
+        this.estado.jugadorSeElimina(this);
+    }
+
+    public void confirmar() {
         this.estado.confirmar(this);
-        return true;
     }
 
-    public boolean iniciar() {
+    public void iniciar() {
         this.estado.iniciar(this);
-        return true;
     }
 
     /** Cancela el partido (o invoca la lógica de cancelación en el estado actual) */
-    public boolean cancelar() {
+    public void cancelar() {
         this.estado.cancelar(this);
-        return true;
     }
 
     /** Finaliza el partido desde el estado actual */
-    public boolean finalizar() {
+    public void finalizar() {
         this.estado.finalizar(this);
-        return true;
     }
 
     /** Notifica a los observers, pasándoles el DTO */

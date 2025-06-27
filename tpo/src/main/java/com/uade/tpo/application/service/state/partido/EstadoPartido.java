@@ -1,10 +1,7 @@
 package com.uade.tpo.application.service.state.partido;
 
 import com.uade.tpo.application.dto.EstadoDTO;
-import com.uade.tpo.application.entity.Jugador;
-import com.uade.tpo.application.entity.Partido;
-import com.uade.tpo.application.service.contexto.ContextoPartido;
-import com.uade.tpo.application.service.contexto.IContextoPartido;
+import com.uade.tpo.application.service.partido.ContextoPartido;
 
 /**
  * Interfaz común para los distintos estados de un Partido.
@@ -18,6 +15,12 @@ public interface EstadoPartido {
      * @param contextoPartido el partido en contexto
      */
     void jugadorSeAgrega(ContextoPartido contextoPartido);
+
+    /**
+     * Jugador se elimina de un equipo.
+     * @param contextoPartido el partido en contexto
+     */
+    void jugadorSeElimina(ContextoPartido contextoPartido);
 
     /**
      * Cuando el partido esta para comenzar, se llama a este metodo.

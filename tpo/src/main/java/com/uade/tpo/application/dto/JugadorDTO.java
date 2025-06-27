@@ -10,6 +10,7 @@ import java.util.List;
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
 public class JugadorDTO {
     private Long id;
+    private Long userId;
     private String nombre;
     private String email;
     private String ubicacion;
