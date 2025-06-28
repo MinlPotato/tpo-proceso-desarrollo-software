@@ -1,0 +1,1220 @@
+{
+	"info": {
+		"_postman_id": "29e45d77-28d8-49da-91c7-4a665728f1bc",
+		"name": "UADE - Proceso de Desarrollo de Software",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24682939",
+		"_collection_link": "https://lunar-space-214379.postman.co/workspace/My-Workspace~8d097972-e987-492d-8660-da542208ff29/collection/24682939-29e45d77-28d8-49da-91c7-4a665728f1bc?action=share&source=collection_link&creator=24682939"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Registro",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"access_token\", pm.response.text());\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"usuario\",\r\n    \"password\": \"securePassword123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localhost}}/api/auth/register",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"access_token\", pm.response.text());"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"usuario2\",\r\n    \"password\": \"securePassword123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localhost}}/api/auth/login",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Jugador",
+			"item": [
+				{
+					"name": "GET Jugadores",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localhost}}/api/jugadores",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"jugadores"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Jugador By ID",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{password}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "{{username}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}/api/jugadores/:ID",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"jugadores",
+								":ID"
+							],
+							"variable": [
+								{
+									"key": "ID",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Jugadores",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json();\r",
+									"pm.environment.set(\"jugador-id\", response.id);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nombre\": \"jonathan\",\r\n    \"email\": \"perie.jonathan@gmail.com\",\r\n    \"ubicacion\": \"San Telmo\",\r\n    \"formaNotificar\": \"EMAIL\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localhost}}/api/jugadores",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"jugadores"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UPDATE Jugador By ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nombre\": \"jugador1\",\r\n    \"email\": \"jugador1@gmail.com\",\r\n    \"ubicacion\": \"Constitución\",\r\n    \"formaNotificar\": \"EMAIL\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localhost}}/api/jugadores/:ID",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"jugadores",
+								":ID"
+							],
+							"variable": [
+								{
+									"key": "ID",
+									"value": "{{jugador-id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Deporte",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"idDeporte\": 1,\r\n    \"nivel\": \"PRINCIPIANTE\",\r\n    \"favorito\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localhost}}/api/jugadores/:ID/deportes",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"jugadores",
+								":ID",
+								"deportes"
+							],
+							"variable": [
+								{
+									"key": "ID",
+									"value": "{{jugador-id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Deporte",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localhost}}/api/jugadores/:idJugador/deportes/:idNivel",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"jugadores",
+								":idJugador",
+								"deportes",
+								":idNivel"
+							],
+							"variable": [
+								{
+									"key": "idJugador",
+									"value": "{{jugador-id}}"
+								},
+								{
+									"key": "idNivel",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Jugador By ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}/api/jugadores/:ID",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"jugadores",
+								":ID"
+							],
+							"variable": [
+								{
+									"key": "ID",
+									"value": "{{jugador-id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Deporte",
+			"item": [
+				{
+					"name": "GET Deportes",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{password}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "{{username}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localhost}}/api/deportes",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"deportes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Deporte By ID",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{password}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "{{username}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}/api/deportes/:ID",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"deportes",
+								":ID"
+							],
+							"variable": [
+								{
+									"key": "ID",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Deporte",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{password}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "{{username}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nombre\": \"Futbol\",\r\n    \"descripcion\": \"Juego de pelota\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localhost}}/api/deportes",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"deportes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UPDATE Deporte By ID",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{password}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "{{username}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nombre\": \"Futbol\",\r\n    \"descripcion\": \"Juego de pelota\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localhost}}/api/deportes/:ID",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"deportes",
+								":ID"
+							],
+							"variable": [
+								{
+									"key": "ID",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Deporte By ID",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{password}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "{{username}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}/api/deportes/:ID",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"deportes",
+								":ID"
+							],
+							"variable": [
+								{
+									"key": "ID",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Notificador",
+			"item": [
+				{
+					"name": "notificar",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{password}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "{{username}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"titulo\": \"Prueba\",\r\n    \"mensaje\": \"Mensaje de prueba\",\r\n    \"email\": \"perie.jonathan@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localhost}}/api/notificacion?strategy=EMAIL",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"notificacion"
+							],
+							"query": [
+								{
+									"key": "strategy",
+									"value": "EMAIL"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Partido",
+			"item": [
+				{
+					"name": "Acciones",
+					"item": [
+						{
+							"name": "Agregar Jugador",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "{{password}}",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "{{username}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"jugadorId\": 3,\r\n    \"numeroEquipo\": 0 // No es por ID, es por indice (Se inicia en 0)\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{localhost}}/api/partidos/:ID/agregar-jugador",
+									"host": [
+										"{{localhost}}"
+									],
+									"path": [
+										"api",
+										"partidos",
+										":ID",
+										"agregar-jugador"
+									],
+									"variable": [
+										{
+											"key": "ID",
+											"value": "{{partido-id}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Eliminar Jugador",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "{{password}}",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "{{username}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"jugadorId\": 3,\r\n    \"numeroEquipo\": 0 // No es por ID, es por indice (Se inicia en 0)\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{localhost}}/api/partidos/:ID/eliminar-jugador",
+									"host": [
+										"{{localhost}}"
+									],
+									"path": [
+										"api",
+										"partidos",
+										":ID",
+										"eliminar-jugador"
+									],
+									"variable": [
+										{
+											"key": "ID",
+											"value": "{{partido-id}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Confirmar",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{localhost}}/api/partidos/:ID/confirmar",
+									"host": [
+										"{{localhost}}"
+									],
+									"path": [
+										"api",
+										"partidos",
+										":ID",
+										"confirmar"
+									],
+									"variable": [
+										{
+											"key": "ID",
+											"value": "{{partido-id}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Finalizar",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{localhost}}/api/partidos/:ID/finalizar",
+									"host": [
+										"{{localhost}}"
+									],
+									"path": [
+										"api",
+										"partidos",
+										":ID",
+										"finalizar"
+									],
+									"variable": [
+										{
+											"key": "ID",
+											"value": "{{partido-id}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Cancelar",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{localhost}}/api/partidos/:ID/cancelar",
+									"host": [
+										"{{localhost}}"
+									],
+									"path": [
+										"api",
+										"partidos",
+										":ID",
+										"cancelar"
+									],
+									"variable": [
+										{
+											"key": "ID",
+											"value": "{{partido-id}}"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "GET Partidos",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localhost}}/api/partidos",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"partidos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Partidos Filtro",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{password}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "{{username}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localhost}}/api/partidos/filtrar?jugadorId=1&tipofiltro=ubicacion",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"partidos",
+								"filtrar"
+							],
+							"query": [
+								{
+									"key": "jugadorId",
+									"value": "1"
+								},
+								{
+									"key": "tipofiltro",
+									"value": "ubicacion"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Partidos By ID",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{password}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "{{username}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localhost}}/api/partidos/:ID",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"partidos",
+								":ID"
+							],
+							"variable": [
+								{
+									"key": "ID",
+									"value": "{{partido-id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Partidos",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"\r",
+									"const currentDate = new Date();\r",
+									"const datePlusTenMinutes = new Date(currentDate.getTime() + 10 * 60000);\r",
+									"pm.variables.set(\"horario\", datePlusTenMinutes.toISOString());"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"partido-id\", pm.response.json().id);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"idCreador\": 6,\r\n    \"idDeporte\": 1,\r\n    \"duracion\": 10000,\r\n    \"horario\": \"{{horario}}\",\r\n    \"ubicacion\": \"San Telmo\",\r\n    \"cantidadEquipos\": 1,\r\n    \"cantidadJugadoresPorEquipo\": 1,\r\n    \"nivelesJugadores\": [\r\n        \"PRINCIPIANTE\",\r\n        \"INTERMEDIO\"\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localhost}}/api/partidos",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"partidos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Partidos By ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localhost}}/api/partidos/:ID",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"partidos",
+								":ID"
+							],
+							"variable": [
+								{
+									"key": "ID",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UPDATE Partidos By ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localhost}}/api/partidos/:ID",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"api",
+								"partidos",
+								":ID"
+							],
+							"variable": [
+								{
+									"key": "ID",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
